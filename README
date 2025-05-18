@@ -1,0 +1,152 @@
+1. Project Setup
+ Create root folder filmflex
+
+ Inside root, create /client and /server folders
+
+ Initialize Git repo (single repo with both folders or separate repos)
+
+ Initialize Node.js project in /server with package.json
+
+ Initialize React app in /client (Create React App or Vite)
+
+ Setup ESLint and Prettier for code formatting (optional but recommended)
+
+2. Backend Setup
+ Setup Express server (server.js)
+
+ Connect MongoDB (Atlas or local)
+
+ Setup environment variables for DB URI, JWT secret, Cloudinary keys
+
+ Setup CORS middleware to allow requests from frontend
+
+3. Database Models
+ User model (username, email, password hash, avatar URL, timestamps)
+
+ Post model (user reference, movieId, image URL, rating, caption, createdAt)
+
+ Optional: MovieCache model (tmdbId, title, poster URL, genres, etc.)
+
+4. Authentication
+ User registration endpoint (hash password)
+
+ User login endpoint (JWT token generation)
+
+ Middleware to verify JWT token and protect routes
+
+ Logout endpoint (optional)
+
+ Secure token storage plan (httpOnly cookies or localStorage)
+
+5. Post Functionality
+ Create post endpoint
+
+Accept image upload (via multipart/form-data or base64)
+
+Upload image to Cloudinary or Firebase Storage
+
+Accept TMDB movie ID and rating
+
+Save post to MongoDB with user reference
+
+ Get posts endpoint (pagination optional)
+
+ Get posts by user endpoint (for profile page)
+
+ Delete/update posts (optional for MVP)
+
+6. TMDB API Integration
+ Setup API key and environment variable
+
+ Search movies endpoint or direct client calls (depending on your architecture)
+
+ Cache movie data (optional for performance)
+
+7. Frontend Setup
+ React Router setup with routes: /, /login, /register, /profile, /create-post
+
+ Tailwind CSS (or preferred styling solution) configured
+
+ Global auth context or state management for logged-in user
+
+8. Auth Pages
+ Login form with validation
+
+ Registration form with validation
+
+ Connect forms to backend endpoints
+
+ Handle auth token and persist user session
+
+ Redirect authenticated users appropriately
+
+9. Post Creation
+ Form for uploading image, searching/selecting movie, entering rating, caption
+
+ Integrate TMDB movie search/autocomplete component
+
+ Image preview before upload
+
+ Submit form data to backend
+
+ Handle upload progress and errors
+
+10. Feed Page
+ Fetch posts from backend
+
+ Display posts in masonry/pinterest-style grid for desktop
+
+ Each post shows: user avatar/username, image, movie title, star rating, caption
+
+ Pagination or infinite scroll (optional)
+
+11. Profile Page
+ Fetch and display user’s posts
+
+ Allow user to edit/delete their posts (optional)
+
+ Show user info and stats (number of posts, average rating, etc.)
+
+12. Additional UX Enhancements
+ Loading spinners/placeholders on API calls
+
+ Error messages and validation feedback
+
+ Responsive adjustments for various desktop screen sizes
+
+ Dark mode toggle (optional)
+
+13. Testing
+ Manual testing of all flows: auth, posting, feed, profile
+
+ Basic unit tests (optional, for key functions or components)
+
+ API route testing with Postman or automated tests
+
+14. Deployment
+ Deploy backend (Heroku, Render, Railway, or similar)
+
+ Deploy frontend (Vercel, Netlify)
+
+ Setup environment variables on production servers
+
+ Connect frontend and backend URLs correctly
+
+15. Documentation & Presentation
+ Write a clear README.md
+
+Project overview
+
+Tech stack
+
+Features
+
+Setup instructions
+
+Future improvements
+
+ Add screenshots or GIFs of your app in action
+
+ Prepare a short demo script or video for interviews/portfolio
+
+ Add the project to your portfolio/resume with a strong bullet point
