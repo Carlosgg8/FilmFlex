@@ -5,40 +5,50 @@
  * and defines API routes for movie post management.
  */
 
-import express from "express"; // Web framework for Node.js
-import dotenv from "dotenv"; // Loads environment variables from .env file
-import cors from "cors"; // Enables Cross-Origin Resource Sharing
-import connectDB from "./config/db.js"; // Function to connect to MongoDB
-import postRoutes from "./routes/postRoutes.js"; // Routes for movie post CRUD operations
+import express from "express";
+import dotenv from "dotenv";
+import cors from "cors";
+import connectDB from "./config/db.js";
+import postRoutes from "./routes/postRoutes.js";
+import session from "express-session";
+import passport from "passport";
+import cookieParser from "cookie-parser";
+import "./config/passport.js"; // Google strategy setup
+import authRoutes from "./routes/authRoutes.js";
 
-// Load environment variables from .env into process.env
-dotenv.config();
 
-// Initialize the Express application
-const app = express();
 
-// Connect to MongoDB
-connectDB();
+dotenv.config(); // Load environment variables
 
-/* Middleware
- * These run before route handlers and process incoming requests
- */
-app.use(express.json()); // Parse incoming JSON
-app.use(cors()); // Allow cross-origin requests
+const app = express(); // Initialize Express
 
-// Route setup
-// All requests to /api/posts are handled in postRoutes.js
+connectDB(); // Connect to MongoDB
+
+// Middleware
+app.use(cookieParser()); // Required for reading session cookies
+app.use(express.json()); // Parse JSON
+app.use(cors({ origin: "http://localhost:5173", credentials: true })); 
+
+app.use(session({
+  secret: process.env.SESSION_SECRET,
+  resave: false,
+  saveUninitialized: false
+}));
+
+app.use(passport.initialize());
+app.use(passport.session());
+
+// Routes
 app.use("/api/posts", postRoutes);
+app.use("/auth", authRoutes);
 
-// Basic route to confirm API is running
+// Test route
 app.get("/", (req, res) => {
   res.send("Welcome to the FilmFlex API");
 });
 
-// Set the port (from .env or fallback to 5000)
+// Start server
 const PORT = process.env.PORT || 5000;
-
-// Start the server
 app.listen(PORT, () => {
   console.log(`FilmFlex server running on port ${PORT}`);
 });
