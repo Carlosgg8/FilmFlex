@@ -6,13 +6,14 @@ import {
   updateEntry,
   deleteEntry,
 } from "../controllers/postController.js"; // Make sure this matches your controller filename
+ import authenticateJWT from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
-router.get("/", getAllEntries);
-router.get("/:id", getEntryById);
-router.post("/", createEntry);
-router.put("/:id", updateEntry);
-router.delete("/:id", deleteEntry);
+  router.get("/", authenticateJWT, getAllEntries);
+ router.post("/", authenticateJWT, createEntry);
+ router.get("/:id", authenticateJWT, getEntryById);
+ router.put("/:id", authenticateJWT, updateEntry);
+ router.delete("/:id", authenticateJWT, deleteEntry);
 
 export default router;

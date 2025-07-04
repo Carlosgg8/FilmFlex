@@ -41,7 +41,7 @@ export const createEntry = async (req, res) => {
     const { movieId, imageURL, caption, rating } = req.body;
 
     const newEntry = new Post({
-      user: req.user.id,
+      user: req.user.userId,
       movieId,
       imageURL,
       caption,
@@ -69,7 +69,7 @@ export const updateEntry = async (req, res) => {
       return res.status(404).json({ message: "No entry found" });
     }
 
-    if (entry.user.toString() !== req.user.id) {
+    if (entry.user.toString() !== req.user.userId) {
       return res.status(403).json({ message: "Forbidden" });
     }
 
@@ -98,7 +98,7 @@ export const deleteEntry = async (req, res) => {
       return res.status(404).json({ message: "No entry found" });
     }
 
-    if (entry.user.toString() !== req.user.id) {
+    if (entry.user.toString() !== req.user.userId) {
       return res.status(403).json({ message: "Forbidden" });
     }
 
