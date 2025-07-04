@@ -10,10 +10,6 @@ import dotenv from "dotenv";
 import cors from "cors";
 import connectDB from "./config/db.js";
 import postRoutes from "./routes/postRoutes.js";
-import session from "express-session";
-import passport from "passport";
-import cookieParser from "cookie-parser";
-import "./config/passport.js"; // Google strategy setup
 import authRoutes from "./routes/authRoutes.js";
 
 
@@ -25,22 +21,15 @@ const app = express(); // Initialize Express
 connectDB(); // Connect to MongoDB
 
 // Middleware
-app.use(cookieParser()); // Required for reading session cookies
+
 app.use(express.json()); // Parse JSON
 app.use(cors({ origin: "http://localhost:5173", credentials: true })); 
 
-app.use(session({
-  secret: process.env.SESSION_SECRET,
-  resave: false,
-  saveUninitialized: false
-}));
 
-app.use(passport.initialize());
-app.use(passport.session());
 
 // Routes
 app.use("/api/posts", postRoutes);
-app.use("/auth", authRoutes);
+app.use("/api/auth", authRoutes);
 
 // Test route
 app.get("/", (req, res) => {

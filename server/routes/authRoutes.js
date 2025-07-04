@@ -2,6 +2,7 @@
  // Defines authentication routes for the ThoughtStream app using Google OAuth2 via Passport.js
  import express from "express";
  import passport from "passport";
+ import { handleGoogleLogin } from "../controllers/authController.js";
  // Create a new Express router instance
  const router = express.Router();
  /**
@@ -80,6 +81,9 @@ errors)
  router.get("/failure", (req, res) => {
   res.status(401).send("Login failed.");
  });
+
+ router.post("/google", handleGoogleLogin);   // POST /api/auth/google
+
  export default router;
 
  
