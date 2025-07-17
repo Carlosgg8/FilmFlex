@@ -1,0 +1,96 @@
+.postModal-container{
+    position:fixed;
+    top: 0px;
+    height: 100%;
+    width: 100%;
+    background-color: rgba(0, 0, 0, 0.35);
+}
+
+.close-modal{
+    position:absolute;
+    right: 15px;
+    top: 15px;
+    color: white;
+}
+
+.modal{
+    background-color: white;
+    width: 800px;
+    height: 600px;
+    margin: auto;
+    margin-top: 50px;
+    display: flex;
+}
+
+
+.modal-image{
+    height: 600px;
+    width: 500px;
+    object-fit: cover;
+}
+
+.modal-content-section{
+    width: 100%;
+    font-size: 14px;
+}
+
+.modal-top-section{
+    display: flex;
+    padding: 15px;
+    align-items: center;
+    border-bottom: 1px solid rgb(220, 220, 220);
+}
+
+.modal-top-section > div:nth-child(3) {
+  margin-left: 10px;
+}
+
+.modal-section{
+    padding: 15px;
+    border-bottom: 1px solid rgb(220, 220, 220);
+}
+
+.profile-image{
+    min-width: 36px;
+    min-height: 36px;
+    max-width: 36px;
+    max-height: 36px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+.modal-username{
+    font-weight: 600;
+}
+
+.spacer{
+    flex:1;
+}
+
+.modal-comment-section{
+    height: 350px;
+    overflow-y: scroll;
+}
+
+.modal-detail-section span{
+    font-weight: 600;
+}
+
+.detail-actions{
+    display: flex;
+    margin-left: 0.3px ;
+}
+
+.detail-actions svg{
+    font-size: 28px;
+    margin: 0px 10px;
+}
+
+.detail-actions svg:first-child{
+    margin-left: 0px;
+}
+
+.detail-actions svg:last-child{
+    margin-right: 0px;
+}
+

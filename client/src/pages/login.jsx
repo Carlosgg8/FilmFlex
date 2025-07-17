@@ -50,8 +50,8 @@
   return (
     <div className="login-page">
       {/* Welcome message and intro text */}
-      <h1>Welcome to ThoughtStream</h1>
-      <p>Record your thoughts, reflections, and moments.</p>
+      <h1>Welcome to Film Flex</h1>
+      <p>Rate and share the movies you just watched!</p>
       {/* GoogleLogin renders a Sign in with Google button using the configured OAuth flow */}
       {/* When successful, calls handleSuccess with the ID token */}
       {/* onError provides a fallback in case login fails */}

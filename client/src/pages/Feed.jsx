@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import PostCard from "../components/PostCard.jsx";
 import "../styles/feed.css";
-
+import NavBar from "../components/NavBar.jsx";
+import { selectPost } from "../utils/postHandlers.js"
 const testPosts = [
   {
     id: 1,
@@ -26,17 +27,24 @@ const testPosts = [
   },
 ];
 
+
+
 function Feed() {
   const [posts, setPosts] = React.useState(testPosts);
 
-  // no need for useEffect here if you’re just using test data
+  // no need for useEffect just using test data
 
   return (
-    <div className="feed-grid">
-      {posts.map((post) => (
-        <PostCard key={post.id} post={post} />
-      ))}
-    </div>
+    <>
+    <NavBar />
+    <div className="feed-container">
+        <div className="feed-grid">
+          {posts.map((post) => (
+            <PostCard key={post.id} post={post} />
+          ))}
+        </div>
+      </div>
+    </>
   );
 }
 

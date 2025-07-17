@@ -1,12 +1,11 @@
 .App {
   min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  
 }
 
 .Container {
-  width: 600px;
-  max-width: 100%;
-  background-color: aquamarine;
+  width: 100%;      /* or max-width: 1200px; */
+  max-width: 1200px;
+  margin: 0 auto;   /* center the container horizontally */
+  padding: 0 16px;  /* add some side padding */
 }

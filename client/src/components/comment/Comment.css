@@ -1,0 +1,19 @@
+.comment-container{
+    display: flex;
+    margin-bottom: 25px;
+}
+
+.comment-container .modal-username{
+    margin-right: 10px;
+}
+
+.comment-details{
+    margin-top: 10px;
+    font-size: 13px;
+    color: rgb(150, 150, 150);
+    font-weight: 600;
+}
+
+.comment-details span:first-child{
+    margin-right: 5px;
+}
