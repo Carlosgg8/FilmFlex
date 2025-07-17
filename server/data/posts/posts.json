@@ -1,0 +1,147 @@
+[
+  {
+  "user": "Tom",
+  "movieId": "550",
+  "imageURL": "https://image.tmdb.org/t/p/w500/bptfVGEQuv6vDTIMVCHjJ9Dz8PX.jpg",
+  "caption": "Just rewatched Fight Club. Still hits hard.",
+  "rating": 5,
+  "likes": 42,
+  "user_profile_image_url": "https://randomuser.me/api/portraits/women/3.jpg",
+  "comments": [
+    {
+      "message": "Great movie!",
+      "from": "Alice",
+      "profile_name": "alice123",
+      "profile_image_url": "https://randomuser.me/api/portraits/women/3.jpg",
+      "likes": 3
+    },
+    {
+      "message": "One of my favorites!",
+      "from": "Bob",
+      "profile_name": "bob456",
+      "profile_image_url": "https://example.com/profiles/bob.jpg",
+      "likes": 1
+    }
+  ]
+},
+  {
+    "user": "64a90bdfc8e7f23b6c1e1c02",
+    "movieId": "299534",
+    "imageURL": "https://image.tmdb.org/t/p/w500/or06FN3Dka5tukK1e9sl16pB3iy.jpg",
+    "caption": "Endgame is a rollercoaster. The final battle scene was epic.",
+    "rating": 4,
+    "likes": 30,
+    "user_profile_image_url": "https://example.com/profiles/user2.jpg",
+    "comments": []
+  },
+  {
+    "user": "64a90bdfc8e7f23b6c1e1c03",
+    "movieId": "157336",
+    "imageURL": "https://image.tmdb.org/t/p/w500/rAiYTfKGqDCRIIqo664sY9XZIvQ.jpg",
+    "caption": "Space, time, and tears. Interstellar is a masterpiece.",
+    "rating": 5,
+    "likes": 50,
+    "user_profile_image_url": "https://example.com/profiles/user3.jpg",
+    "comments": [
+      {
+        "message": "Loved the visuals!",
+        "from": "Charlie",
+        "profile_name": "charlie789",
+        "profile_image_url": "https://example.com/profiles/charlie.jpg",
+        "likes": 2
+      }
+    ]
+  },
+  {
+    "user": "64a90bdfc8e7f23b6c1e1c04",
+    "movieId": "497",
+    "imageURL": "https://image.tmdb.org/t/p/w500/f89U3ADr1oiB1s9GkdPOEpXUk5H.jpg",
+    "caption": "The Shawshank Redemption is pure gold.",
+    "rating": 5,
+    "likes": 38,
+    "user_profile_image_url": "https://example.com/profiles/user4.jpg",
+    "comments": [
+      {
+        "message": "Timeless classic.",
+        "from": "Dana",
+        "profile_name": "dana_sky",
+        "profile_image_url": "https://example.com/profiles/dana.jpg",
+        "likes": 4
+      }
+    ]
+  },
+  {
+    "user": "64a90bdfc8e7f23b6c1e1c05",
+    "movieId": "680",
+    "imageURL": "https://image.tmdb.org/t/p/w500/q6y0Go1tsGEsmtFryDOJo3dEmqu.jpg",
+    "caption": "Pulp Fiction never gets old.",
+    "rating": 5,
+    "likes": 27,
+    "user_profile_image_url": "https://example.com/profiles/user5.jpg",
+    "comments": []
+  },
+  {
+    "user": "64a90bdfc8e7f23b6c1e1c06",
+    "movieId": "24428",
+    "imageURL": "https://image.tmdb.org/t/p/w500/7RyHsO4yDXtBv1zUU3mTpHeQ0d5.jpg",
+    "caption": "Avengers Assemble! The first one still rocks.",
+    "rating": 4,
+    "likes": 36,
+    "user_profile_image_url": "https://example.com/profiles/user6.jpg",
+    "comments": [
+      {
+        "message": "Classic MCU magic!",
+        "from": "Eli",
+        "profile_name": "eli_power",
+        "profile_image_url": "https://example.com/profiles/eli.jpg",
+        "likes": 1
+      }
+    ]
+  },
+  {
+    "user": "64a90bdfc8e7f23b6c1e1c07",
+    "movieId": "27205",
+    "imageURL": "https://image.tmdb.org/t/p/w500/q719jXXEzOoYaps6babgKnONONX.jpg",
+    "caption": "Inception bends your mind like no other.",
+    "rating": 5,
+    "likes": 44,
+    "user_profile_image_url": "https://example.com/profiles/user7.jpg",
+    "comments": []
+  },
+  {
+    "user": "64a90bdfc8e7f23b6c1e1c08",
+    "movieId": "278",
+    "imageURL": "https://image.tmdb.org/t/p/w500/q6y0Go1tsGEsmtFryDOJo3dEmqu.jpg",
+    "caption": "The Shawshank Redemption is a timeless classic.",
+    "rating": 5,
+    "likes": 40,
+    "user_profile_image_url": "https://example.com/profiles/user8.jpg",
+    "comments": [
+      {
+        "message": "Watched it 10 times.",
+        "from": "Fay",
+        "profile_name": "fay_reads",
+        "profile_image_url": "https://example.com/profiles/fay.jpg",
+        "likes": 2
+      }
+    ]
+  },
+  {
+    "user": "64a90bdfc8e7f23b6c1e1c09",
+    "movieId": "13",
+    "imageURL": "https://image.tmdb.org/t/p/w500/2CAL2433ZeIihfX1Hb2139CX0pW.jpg",
+    "caption": "Forrest Gump, life is like a box of chocolates.",
+    "rating": 5,
+    "likes": 33,
+    "user_profile_image_url": "https://static.wikia.nocookie.net/impracticaljokers/images/4/40/Brian_Quinn.jpg",
+    "comments": [
+      {
+        "message": "Run, Forrest, run!",
+        "from": "Grace",
+        "profile_name": "graceful_days",
+        "profile_image_url": "https://example.com/profiles/grace.jpg",
+        "likes": 3
+      }
+    ]
+  }
+]

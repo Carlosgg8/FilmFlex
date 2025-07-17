@@ -7,30 +7,52 @@ const postSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId, 
       ref: "User", 
       required: false
-    }, // Reference to the user who created the post
+    },
+
+    user_profile_image_url: {
+      type: String,
+      required: false, 
+    },
 
     movieId: { 
       type: String, 
       required: true 
-    }, // TMDB movie ID
+    },
 
     imageURL: { 
       type: String, 
       required: true 
-    }, // URL to uploaded image 
+    },
 
     caption: { 
       type: String, 
       trim: true, 
       maxlength: 500 
-    }, // Optional text the user adds
+    },
 
     rating: { 
       type: Number, 
       required: true 
-    }, // Star rating given by the user (e.g. 1-5)
+    },
+
+    // Number of likes
+    likes: {
+      type: Number,
+      default: 0
+    },
+
+    // Array of comments
+    comments: [
+      {
+        message: String,
+        from: String,
+        profile_name: String,
+        profile_image_url: String,
+        likes: { type: Number, default: 0 }
+      }
+    ]
   },
-  { timestamps: true } // Adds createdAt and updatedAt automatically
+  { timestamps: true }
 );
 
 // Create the Post model
