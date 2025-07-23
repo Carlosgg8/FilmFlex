@@ -2,6 +2,7 @@ import React from "react";
 
 import './Comment.css'
 
+
 export default function CommentItem({comment}){
     return(
         <div className="comment-container">

@@ -3,6 +3,13 @@
   margin: 0 auto;
   padding: 0 16px;
   padding-top: 15px;
+
+}
+
+.feed-content {
+  padding-top: 60px; /* Adjust based on your NavBar height */
+  max-width: 600px;
+  margin: 0 auto;
 }
 
 .feed-grid {
@@ -91,6 +98,9 @@
   font-family: 'Pacifico', cursive;
   font-size: 16px;
   flex-shrink: 0;
+  text-decoration: none;
+  color: black;
+  cursor: pointer;
 }
 
 .search-wrapper {

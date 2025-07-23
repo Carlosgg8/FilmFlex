@@ -1,9 +1,11 @@
-import React, { useRef } from "react";
+import React, { useRef, useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import SearchIcon from "../assets/loupe.png";
 import message from "../assets/navbar-assets/message-circle.png"
 import profile from "../assets/navbar-assets/user-round-pen.png"
 import bell from "../assets/navbar-assets/bell.png"
 import create from "../assets/navbar-assets/circle-plus.png"
+import CreatModal from "./modals/CreateModal/CreateModal";
 import {
   useGoMessage,
   popNotifications,
@@ -13,17 +15,32 @@ import {
 
 
 const NavBar = () => {
+  const [showCreateModal, setShowCreateModal] = useState(false);
+
+  useEffect(() => {
+  if (showCreateModal) {
+    document.body.style.overflow = "hidden";
+  } else {
+    document.body.style.overflow = "auto";
+  }
+
+  return () => {
+    document.body.style.overflow = "auto";
+  };
+}, [showCreateModal]);
+
     return(
         <div>
             <div className="navbar-container">
                 <div className="nav-bar">
-                    <div className="logo-section">Film Flex</div>
+                    <Link to="/" className="logo-section">Film Flex</Link>
                     <div className="searchbar-section">
                         <SearchBar/>
                     </div>
-                    <ActionSection/>
+                    <ActionSection onShowCreateModal={() => setShowCreateModal(true)} />
                 </div>
             </div>
+            {showCreateModal && <CreatModal onClose={() => setShowCreateModal(false)} />}
         </div>
     )
 }
@@ -46,9 +63,8 @@ const SearchBar = () => {
   );
 };
 
-const ActionSection = () => {
+const ActionSection = ({ onShowCreateModal }) => {
   const goMessage = useGoMessage();
-  const createPost = useCreatePost();
   const goProfile = useGoProfile();
   const showNotifications = popNotifications();
 
@@ -57,13 +73,14 @@ const ActionSection = () => {
       <div onClick={goMessage} className="messages">
         <img src={message} alt="message" className="messages" />
       </div>
-      <div onClick={popNotifications} className="notifications">
+      <div onClick={showNotifications} className="notifications">
         <img src={bell} alt="notification" className="notifications" />
       </div>
-      <div onClick={createPost} className="create-post">
+      {/* Updated to use onShowCreateModal instead of createPost */}
+      <div onClick={onShowCreateModal} className="create-post">
         <img src={create} alt="Make a post" className="create-post" />
       </div>
-      <div onClick={goProfile}className="profile">
+      <div onClick={goProfile} className="profile">
         <img src={profile} alt="profile" className="profile" />
       </div>
     </div>

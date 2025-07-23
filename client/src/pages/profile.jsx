@@ -2,7 +2,9 @@ import React, { useEffect, useState } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 
 import Content from "../components/profile/content/Content";
-import PostModal from '../components/modal/PostModal'
+import PostModal from '../components/modals/PostModal/PostModal.jsx'
+import ProfileHeader from "../components/profile/ProfileHeader/ProfileHeader";
+import NavBar from "../components/NavBar.jsx";
 
 
 
@@ -33,6 +35,8 @@ function ProfilePage() {
 
     return (
         <>
+        <NavBar/>
+        <ProfileHeader/>
         <Content handleSelectPost={handleSelectPost} />
         {isModalOpen && <PostModal post={selectedPost} onClose={handleCloseModal} />}
         </>

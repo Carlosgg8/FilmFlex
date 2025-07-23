@@ -1,11 +1,11 @@
 import React from "react";
 import threeDots from "../assets/3dots.png";
-import heart from "../assets/heart.png";
-import comment from "../assets/chat.png";
-import send from "../assets/send.png"
-import bookmark from "../assets/bookmark.png"
+import Favorite from "@mui/icons-material/Favorite";
+import ModeComment from "@mui/icons-material/ModeComment";
+import Send from "@mui/icons-material/Send";
+import BookMark from "@mui/icons-material/BookMark";
 
-function PostCard({post}) {
+function PostCard({post, onCommentClick}) {
   return (
     <div className="post-card">
       <Header profileImage={post.profileImage} user={post.user} />
@@ -13,7 +13,7 @@ function PostCard({post}) {
         <Photo src={post.photoSrc} />
       </div>
       <Caption text={post.caption} />
-      <ActionBar />
+      <ActionBar onCommentClick={() => onCommentClick(post)}/>
     </div>
   );
 }
@@ -40,17 +40,17 @@ const Photo = ({src}) => {
   )
 }
 
-const ActionBar = () => {
+const ActionBar = ( {onCommentClick} ) => {
   return(
     <div className="bar">
       <div className="bar-left">
-        <img src={heart} alt="heart" className="action-icon"/>
-        <img src={comment} alt="comment" className="action-icon"/>
-        <img src={send} alt="send" className="action-icon"/>
+        <Favorite alt="heart" className="action-icon"/>
+        <ModeComment alt="comment" className="action-icon" onClick={onCommentClick}/>
+        <Send alt="send" className="action-icon"/>
         
       </div>
       <div className="bar-right">
-        <img src={bookmark} alt="bookmark" className="action-icon-right"/>
+        <BookMark alt="bookmark" className="action-icon-right"/>
       </div>
     </div>
   )

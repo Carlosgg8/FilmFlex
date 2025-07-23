@@ -1,8 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import PostCard from "../components/PostCard.jsx";
 import "../styles/feed.css";
 import NavBar from "../components/NavBar.jsx";
 import { selectPost } from "../utils/postHandlers.js"
+import PostModal from "../components/modals/PostModal/PostModal.jsx"
+
+
 const testPosts = [
   {
     id: 1,
@@ -27,27 +30,56 @@ const testPosts = [
   },
 ];
 
+const FeedContent = ({ handleSelectPost, posts }) => {
+  return (
+    <div className="feed-content">
+      <div className="feed-grid">
+        {posts.map((post) => (
+          <PostCard key={post.id} post={post} onCommentClick={handleSelectPost} />
+        ))}
+      </div> 
+    </div>
+  );
+};
 
 
 function Feed() {
-  const [posts, setPosts] = React.useState(testPosts);
+  const [posts, setPosts] = useState(testPosts);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedPost, setSelectedPost] = useState(null);
 
-  // no need for useEffect just using test data
+  const handleSelectPost = (post) => {
+    setSelectedPost(post);
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setSelectedPost(null);
+  };
+
+  useEffect(() => {
+  if (isModalOpen) {
+    document.body.style.overflow = "hidden";
+  } else {
+    document.body.style.overflow = "auto";
+  }
+
+  return () => {
+    document.body.style.overflow = "auto";
+  };
+}, [isModalOpen]);
 
   return (
     <>
-    <NavBar />
-    <div className="feed-container">
-        <div className="feed-grid">
-          {posts.map((post) => (
-            <PostCard key={post.id} post={post} />
-          ))}
-        </div>
+      <NavBar />
+      <div className="feed-container">
+        <FeedContent handleSelectPost={handleSelectPost} posts={posts} />
       </div>
+      {isModalOpen && <PostModal post={selectedPost} onClose={handleCloseModal} />}
     </>
   );
 }
-
 export default Feed;
 
 
