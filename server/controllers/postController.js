@@ -108,3 +108,14 @@ export const deleteEntry = async (req, res) => {
     res.status(500).json({ message: "Entry deletion failed" });
   }
 };
+
+/* function to get the users post and dicplay them on their (there?) profile*/
+export const getEntriesByUserId = async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const entries = await Post.find({ user: userId }).sort({ createdAt: -1 });
+    res.status(200).json(entries);
+  } catch (error) {
+    res.status(500).json({ message: "Failed to fetch user posts", error });
+  }
+};
