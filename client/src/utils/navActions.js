@@ -12,9 +12,9 @@ export function useCreatePost() {
   return () => navigate("/createPost");
 }
 
-export function useGoProfile() {
+export function useGoProfile(userId) {
   const navigate = useNavigate();
-  return () => navigate("/profilePage");
+  return () => navigate(`/profile/${userId}`);
 }
 
 export function popNotifications() {

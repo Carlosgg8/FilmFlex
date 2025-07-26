@@ -30,8 +30,8 @@ function App() {
             element={isAuthenticated ? <Feed /> : <Navigate to="/login" />}
           />
           <Route path="/messagePage" element={<MessagePage />} />
-          <Route path="/profilePage" element={<ProfilePage />} />
-          <Route path="/createPost" element={<CreatePost />} />
+          <Route path="/profile/:userId" element={<ProfilePage />} />
+          
         </Routes>
 
     </div>

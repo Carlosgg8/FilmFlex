@@ -1,8 +1,19 @@
-/* Create Modal Specific Styles */
+.createModal-container{
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 100vw;
+    background-color: rgba(0, 0, 0, 0.35);
+    z-index: 1000;
+}
+
+
 .create-modal {
     display: flex;
     height: 90vh;
     max-height: 900px;
+  
 }
 
 .modal-image-container {

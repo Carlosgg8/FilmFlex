@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useState, useEffect, useContext } from "react";
 import { Link } from "react-router-dom";
 import SearchIcon from "../assets/loupe.png";
 import message from "../assets/navbar-assets/message-circle.png"
@@ -6,44 +6,54 @@ import profile from "../assets/navbar-assets/user-round-pen.png"
 import bell from "../assets/navbar-assets/bell.png"
 import create from "../assets/navbar-assets/circle-plus.png"
 import CreatModal from "./modals/CreateModal/CreateModal";
+import NotificationModal from "./modals/NotificationModal/NotificationModal";
 import {
   useGoMessage,
-  popNotifications,
   useCreatePost,
   useGoProfile,
 } from "../utils/navActions"
-
+import { AuthContext } from "../context/authContext";
 
 const NavBar = () => {
   const [showCreateModal, setShowCreateModal] = useState(false);
+  const [showNotificationModal, setShowNotificationModal] = useState(false);
+  const { user } = useContext(AuthContext); // get user from context
 
   useEffect(() => {
-  if (showCreateModal) {
-    document.body.style.overflow = "hidden";
-  } else {
-    document.body.style.overflow = "auto";
-  }
+    if (showCreateModal || showNotificationModal) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "auto";
+    }
+    return () => {
+      document.body.style.overflow = "auto";
+    };
+  }, [showCreateModal, showNotificationModal]);
 
-  return () => {
-    document.body.style.overflow = "auto";
-  };
-}, [showCreateModal]);
-
-    return(
-        <div>
-            <div className="navbar-container">
-                <div className="nav-bar">
-                    <Link to="/" className="logo-section">Film Flex</Link>
-                    <div className="searchbar-section">
-                        <SearchBar/>
-                    </div>
-                    <ActionSection onShowCreateModal={() => setShowCreateModal(true)} />
-                </div>
-            </div>
-            {showCreateModal && <CreatModal onClose={() => setShowCreateModal(false)} />}
+  return (
+    <div>
+      <div className="navbar-container">
+        <div className="nav-bar">
+          <Link to="/" className="logo-section">Film Flex</Link>
+          <div className="searchbar-section">
+            <SearchBar />
+          </div>
+          <ActionSection
+            onShowCreateModal={() => setShowCreateModal(true)}
+            onShowNotificationModal={() => setShowNotificationModal(true)}
+            userId={user && user._id}
+          />
         </div>
-    )
-}
+      </div>
+      {showCreateModal && (
+        <CreatModal onClose={() => setShowCreateModal(false)} />
+      )}
+      {showNotificationModal && (
+        <NotificationModal onClose={() => setShowNotificationModal(false)} />
+      )}
+    </div>
+  );
+};
 
 const SearchBar = () => {
   const inputRef = useRef(null); 
@@ -63,20 +73,18 @@ const SearchBar = () => {
   );
 };
 
-const ActionSection = ({ onShowCreateModal }) => {
+const ActionSection = ({ onShowCreateModal, onShowNotificationModal, userId }) => {
   const goMessage = useGoMessage();
-  const goProfile = useGoProfile();
-  const showNotifications = popNotifications();
+  const goProfile = useGoProfile(userId);
 
-  return(
+  return (
     <div className="action-section">
       <div onClick={goMessage} className="messages">
         <img src={message} alt="message" className="messages" />
       </div>
-      <div onClick={showNotifications} className="notifications">
+      <div onClick={onShowNotificationModal} className="notifications">
         <img src={bell} alt="notification" className="notifications" />
       </div>
-      {/* Updated to use onShowCreateModal instead of createPost */}
       <div onClick={onShowCreateModal} className="create-post">
         <img src={create} alt="Make a post" className="create-post" />
       </div>
@@ -84,8 +92,7 @@ const ActionSection = ({ onShowCreateModal }) => {
         <img src={profile} alt="profile" className="profile" />
       </div>
     </div>
-  )
-
-}
+  );
+};
 
 export default NavBar;

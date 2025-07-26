@@ -28,13 +28,13 @@ export default function CreateModal({ onClose }) {
     };
 
     const onClickModal = (element) => {
-        if (element.className === "postModal-container") {
+        if (element.className === "createModal-container") {
             onClose();
         }
     };
 
     return (
-        <div onClick={(e) => onClickModal(e.target)} className="postModal-container">
+        <div onClick={(e) => onClickModal(e.target)} className="createModal-container">
             <div onClick={() => onClose()} className="close-modal hoverable">
                 <Close fontSize="large"/>
             </div>
