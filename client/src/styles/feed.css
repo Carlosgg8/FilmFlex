@@ -83,6 +83,8 @@
   top:0;
   background-color: white;
   z-index: 999;
+  box-sizing: border-box;
+  width: 100vw;
 }
 
 .nav-bar {

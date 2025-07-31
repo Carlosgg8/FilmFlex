@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import './Modal.css'
 
 import MoreHoriz from "@mui/icons-material/MoreHoriz"
@@ -10,11 +10,30 @@ import Send from "@mui/icons-material/Send";
 import BookMark from "@mui/icons-material/BookMark";
 
 export default function PostModal({ onClose, post}) {
+    // Helper to get scrollbar width
+    function getScrollbarWidth() {
+        return window.innerWidth - document.documentElement.clientWidth;
+    }
+
+    useEffect(() => {
+        // On mount: lock scroll and add padding
+        const scrollbarWidth = getScrollbarWidth();
+        document.body.style.overflow = "hidden";
+        document.body.style.paddingRight = scrollbarWidth + "px";
+        return () => {
+            // On unmount: restore scroll and remove padding
+            document.body.style.overflow = "";
+            document.body.style.paddingRight = "";
+        };
+    }, []);
+
     function onClickModal(element) {
         if (element.className === "postModal-container") {
         onClose();
         }
     }
+
+    
 
     return( 
         <div onClick={(e) => onClickModal(e.target)} className="postModal-container">

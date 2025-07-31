@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { Routes, Route, Navigate, useParams  } from "react-router-dom";
 
+import { useContext } from "react";
+import { AuthContext } from "../context/authContext";
+
 import Content from "../components/profile/content/Content";
 import PostModal from '../components/modals/PostModal/PostModal.jsx'
 import ProfileHeader from "../components/profile/ProfileHeader/ProfileHeader";
@@ -10,6 +13,7 @@ import NavBar from "../components/NavBar.jsx";
 
 function ProfilePage() {
     const { userId } = useParams();  
+    const { user } = useContext(AuthContext);
 
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedPost, setSelectedPost] = useState(null);
@@ -34,7 +38,7 @@ function ProfilePage() {
     return (
         <>
             <NavBar />
-            <ProfileHeader userId={userId} /> {/* Optional: customize header for other user */}
+            <ProfileHeader user={user} /> 
             <Content userId={userId} handleSelectPost={handleSelectPost} />
             {isModalOpen && <PostModal post={selectedPost} onClose={handleCloseModal} />}
         </>

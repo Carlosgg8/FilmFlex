@@ -1,66 +1,106 @@
 // src/pages/Login.jsx
- /** Import the prebuilt React component "GoogleLogin" from "@react-oauth/google" package.
- *
- * This built-in component automatically renders a Google-branded "Sign in with Google" button.
- * It handles the complete OAuth login flow in the browser, including redirect, token retrieval,
- * and invoking the appropriate onSuccess/onError handlers.
- * No need to build a custom button — this ensures a secure and up-to-date implementation.
- */
- import { GoogleLogin } from "@react-oauth/google";
- // Import the configured Axios instance that automatically attaches the app-issued JWT to API requests
- import api from "../services/api";
- // Import the AuthContext and React's built-in useContext hook
- // This is how we access the global authentication state
- import { useContext } from "react";
- import { AuthContext } from "../context/authContext";
- // Define the Login component that displays the login page and handles login logic
- function Login() {
-  // Access the login function from AuthContext using useContext
-  // The login() function stores the JWT and user info after successful authentication
+import { GoogleLogin } from "@react-oauth/google";
+import api from "../services/api";
+import { useContext, useState } from "react";
+import { AuthContext } from "../context/authContext";
+import GoogleLogo from "../assets/login-assets/Google__G__logo.svg.png";
+import AppleLogo from "../assets/login-assets/Apple_logo_black.svg";
+import '../styles/login.css';
+
+function Login() {
   const { login } = useContext(AuthContext);
-  /**
-   * This function is triggered after the user successfully logs in via Google.
-   * It acts as the bridge between Google OAuth on the frontend and secure authentication in our app.
-   * 
-   * Steps:
-   * 1. Extract the ID token (credential) issued by Google.
-   * 2. Send the ID token to our backend, which verifies it using google-auth-library.
-   * 3. If valid, the backend responds with an app-issued JWT and user profile.
-   * 4. Save this data in the app using the login() function from AuthContext.
-   */
+
+  const [form, setForm] = useState({
+      email: "",
+      password: ""
+    });
+
   const handleSuccess = async (credentialResponse) => {
     try {
-      // Extract the Google-issued ID token (JWT) from the login response
       const idToken = credentialResponse.credential;
-      // Send the ID token to the backend to verify and exchange for an app-issued JWT
       const response = await api.post("/api/auth/google", { credential: idToken });
-      /** 
-       * This login() call supports stateless authentication using JWT:
-       * - Stores the JWT in localStorage to persist login across page reloads
-       * - Saves the user info in localStorage as well
-       * - Updates React app state so components can react to login status
-       * - Keeps the user authenticated until they explicitly log out
-       */
       login(response.data.token, response.data.user);
     } catch (error) {
-      // Log any errors that occur during the login or backend exchange process
       console.error("Login failed:", error);
     }
   };
+
+  // Create a hidden div to contain the GoogleLogin button
+  const renderGoogleLoginButton = () => {
+    return (
+      <div style={{
+        position: 'absolute',
+        left: '-9999px',
+        top: '-9999px',
+        width: '0',
+        height: '0',
+        overflow: 'hidden'
+      }}>
+        <GoogleLogin
+          onSuccess={handleSuccess}
+          onError={() => console.error("Google login failed")}
+        />
+      </div>
+    );
+  };
+
   return (
     <div className="login-page">
       {/* Welcome message and intro text */}
-      <h1>Welcome to Film Flex</h1>
-      <p>Rate and share the movies you just watched!</p>
-      {/* GoogleLogin renders a Sign in with Google button using the configured OAuth flow */}
-      {/* When successful, calls handleSuccess with the ID token */}
-      {/* onError provides a fallback in case login fails */}
-      <GoogleLogin
-        onSuccess={handleSuccess}
-        onError={() => console.error("Google login failed")}
-      />
+      <div className="header">
+        <h1>Welcome to Film Flex</h1>
+        <p>Rate and share the movies you just watched!</p>
+      </div>
+
+      <div className="login-container">
+        <h2 className="form-title">Log in with</h2>
+        <div className="social-login">
+          {/* Custom Google button that triggers the hidden GoogleLogin */}
+          <button 
+            className="social-button"
+            onClick={() => document.querySelector('div[role=button]').click()}
+          >
+            <img src={GoogleLogo} alt="Google" className="social-icon" />
+            Google
+          </button>
+          <button className="social-button">
+            <img src={AppleLogo} alt="Apple" className="social-icon" />
+            Apple
+          </button>
+        </div>
+
+        <p className="seperator"><span>or</span></p>
+
+        <form action="#" className="login-form">
+          <div className="input-wrapper">
+            <input
+              name="email"
+              type="email"
+              placeholder="Email address"
+              className="input-field"
+              required
+              value={form.email}
+              onChange={(e) => setForm({ ...form, [e.target.name]: e.target.value })}
+            />
+            <i className="material-symbols-outlined"> mail</i>
+          </div>
+
+          <div className="input-wrapper">
+            <input type="password" placeholder="Password" className="input-field" required/>
+            <i className="material-symbols-outlined">lock</i>
+          </div>
+          <a href="#" className="forgot-pass-link">Forgot Password?</a>
+
+          <button className="login-button">Log In</button>
+        </form>
+
+       <p className="signup-text">Don't have an account? <a href="/signup">Sign up now!</a></p>
+      </div>
+
+      {/* Render the hidden GoogleLogin button */}
+      {renderGoogleLoginButton()}
     </div>
   );
- }
- // Export the Login component so it can be used in React Router routes
- export default Login;
+}
+
+export default Login;

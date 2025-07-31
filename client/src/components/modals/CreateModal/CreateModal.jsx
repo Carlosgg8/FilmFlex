@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import './CreateModal.css';
 import Close from "@mui/icons-material/Close";
 import StarRate from "@mui/icons-material/StarRate";
@@ -11,6 +11,23 @@ export default function CreateModal({ onClose }) {
         caption: ''
     });
 
+    // Helper to get scrollbar width
+    function getScrollbarWidth() {
+        return window.innerWidth - document.documentElement.clientWidth;
+    }
+
+    useEffect(() => {
+        // On mount: lock scroll and add padding
+        const scrollbarWidth = getScrollbarWidth();
+        document.body.style.overflow = "hidden";
+        document.body.style.paddingRight = scrollbarWidth + "px";
+        return () => {
+            // On unmount: restore scroll and remove padding
+            document.body.style.overflow = "";
+            document.body.style.paddingRight = "";
+        };
+    }, []);
+
     const handleImageUpload = (type) => (e) => {
         const file = e.target.files[0];
         if (!file) return;
@@ -22,10 +39,28 @@ export default function CreateModal({ onClose }) {
         reader.readAsDataURL(file);
     };
 
-    const handlePost = () => {
-        console.log("Posting review:", formData);
-        onClose();
-    };
+    const handlePost = async () => {
+        try {
+            const response = await fetch("/api/posts", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${localStorage.getItem("token")}`
+            },
+            body: JSON.stringify(formData)
+            });
+
+            if (!response.ok) {
+            throw new Error("Failed to create post");
+            }
+
+            const createdPost = await response.json();
+            console.log("Created post:", createdPost);
+            onClose(); // close modal
+        } catch (error) {
+            console.error("Error posting review:", error);
+        }
+        };
 
     const onClickModal = (element) => {
         if (element.className === "createModal-container") {

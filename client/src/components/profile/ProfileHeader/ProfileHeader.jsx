@@ -1,17 +1,17 @@
 import React from "react";
 import './ProfileHeader.css';
 
-export default function ProfileHeader() {
+export default function ProfileHeader( {user} ) { 
     return(
         
             <div className="header-container">
                 <div className="header-left">
-                    <img className="profile-photo" src="https://image.tmdb.org/t/p/w500/bptfVGEQuv6vDTIMVCHjJ9Dz8PX.jpg"/>
+                    <img className="profile-photo" src={user.picture} alt={user.name} />
                 </div>
 
                 <div className="header-right">
                     <div className="user-info">
-                        <h2 className="username">username</h2>
+                        <h2 className="username">{user.username} </h2>
                         <button className="follow-btn">Follow</button>
                     </div>
                     

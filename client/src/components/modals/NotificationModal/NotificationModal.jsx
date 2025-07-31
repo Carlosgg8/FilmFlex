@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import './NotificationModal.css';
 
 import Close from "@mui/icons-material/Close";
@@ -28,6 +28,23 @@ export default function NotificationModal({ onClose }) {
             onClose();
         }
     };
+
+    // Helper to get scrollbar width
+    function getScrollbarWidth() {
+        return window.innerWidth - document.documentElement.clientWidth;
+    }
+
+    useEffect(() => {
+        // On mount: lock scroll and add padding
+        const scrollbarWidth = getScrollbarWidth();
+        document.body.style.overflow = "hidden";
+        document.body.style.paddingRight = scrollbarWidth + "px";
+        return () => {
+            // On unmount: restore scroll and remove padding
+            document.body.style.overflow = "";
+            document.body.style.paddingRight = "";
+        };
+    }, []);
 
     return(
         <div onClick={(e) => onClickModal(e.target)} className="notificationModal-container">

@@ -21,6 +21,16 @@
  * Inside any child component, use useContext(AuthContext) to access auth state.
  */
  function AuthProvider({ children }) {
+  // Sync token state with localStorage changes (e.g., manual removal)
+  useEffect(() => {
+    function handleStorage(e) {
+      if (e.key === "jwt") {
+        setToken(e.newValue); // Will be null if removed
+      }
+    }
+    window.addEventListener("storage", handleStorage);
+    return () => window.removeEventListener("storage", handleStorage);
+  }, []);
   // State to store the current user object (e.g., { name, email, picture })
   const [user, setUser] = useState(null);
   // State to store the JWT token received from backend
@@ -57,6 +67,7 @@ login function
    */
 
   const login = (jwt, userInfo) => {
+    console.log("[AuthContext] login() userInfo:", userInfo);
     localStorage.setItem("jwt", jwt);                       // Save token persistently
     localStorage.setItem("user", JSON.stringify(userInfo)); // Save user as a string
     setToken(jwt);                                          // Update state
@@ -74,6 +85,7 @@ logout function
     localStorage.removeItem("user");    // Remove stored user info
     setToken(null);                     // Reset app state
     setUser(null);
+    window.location.href = '/login';
   };
   /**
    * 

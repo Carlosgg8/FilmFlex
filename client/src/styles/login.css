@@ -1,0 +1,213 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.login-page {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    background: wheat;
+    padding: 20px;
+}
+
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+
+.header{
+    text-align: center;
+    margin-bottom: 2.5rem;
+    padding: 0 20px;
+}
+
+.header h1{
+    font-size: 2.5rem;
+    color:#5a4a3a;
+    margin-bottom: 0.5rem;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+}
+
+.header p{
+    font-size: 1.1rem;
+    color: #7a6b5a;
+    font-weight: 400;
+}
+
+.login-container {
+    width: 480px;
+    margin: 0 auto 2rem;
+    border-radius: 12px;
+    padding: 2.5rem 2rem;
+    background-color: #fff;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+.login-container .form-title{
+    text-align: center;
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 2rem;
+    color: #5a4a3a;
+}
+
+.login-container .social-login{
+    display: flex;
+    gap: 1rem;
+    margin-bottom: .5rem;
+}
+
+.social-login .social-button{
+    display: flex;
+    width: 100%;
+    gap: .8rem;
+    cursor: pointer;
+    font-size: 1rem;
+    padding: 0.9rem 0;
+    border-radius: 8px;
+    align-items: center;
+    justify-content: center;
+    background: #f8f8f8;
+    border: 1px solid #e0e0e0;
+    transition: all 0.3s ease;
+    color: #5a4a3a;
+    font-weight: 500;
+}
+
+.social-login .social-button:hover{
+    background: #f0f0f0;
+    border-color: #c0b6a8;
+    transform: translateY(-2px);
+}
+
+.social-login .social-button .social-icon{
+    width: 25px;
+    height: 25px;
+}
+
+.login-container .seperator{
+    margin: 1.8rem 0;
+    text-align: center;
+    position: relative;
+    color: #a3958a;
+}
+
+.login-container .seperator span{
+    position: relative;
+    background: #fff;
+    z-index:1 ;
+    padding:0 1rem ;
+    font-size: 1rem;
+    font-weight:500 ;
+}
+
+.login-container .seperator::after{
+    position: absolute;
+    content: "";
+    left: 0;
+    top: 50%;
+    width: 100%;
+    height: 1px;
+    background: #e0d6c8;
+}
+
+.login-form .input-wrapper{
+    height: 54px;
+    width: 100%;
+    margin-bottom: 1.5rem;
+    position: relative;
+}
+
+.login-form .input-wrapper .input-field{
+    height: 100%;
+    width: 100%;
+    outline: none;
+    font-size: 1rem;
+    border-radius: 0.31rem;
+    border: 1px solid #d5cbbc;
+    padding: 0 1.25rem 0 3.12rem;
+    transition: 0.2s ease;
+    color: #5a4a3a;
+    background: #faf9f7;
+}
+
+.login-form .input-wrapper .input-field:focus{
+    border-color: #b8a995;
+    box-shadow: 0 0 0 2px rgba(184, 169, 149, 0.2);
+}
+
+.login-form .input-wrapper .input-field::placeholder{
+    color: #b8a995;
+}
+
+.login-form .input-wrapper i{
+    color: #b8a995;
+    position: absolute;
+    top: 50%;
+    left: 0.9rem;
+    pointer-events: none;
+    transform: translateY(-50%);
+    font-size: 1.2rem;
+}
+
+.login-form .input-wrapper .input-field:focus ~ i{
+    color: #8a7860;
+}
+
+.login-form .forgot-pass-link{
+    display: block;
+    width: fit-content;
+    margin: -0.5rem 0 1rem auto;
+    color: #8a7860;
+    font-size: 0.9rem;
+    transition: color 0.2s ease;
+}
+
+.login-form .login-button{
+    width: 100%;
+    height: 54px;
+    cursor: pointer;
+    outline: none;
+    border: none;
+    color: #fff;
+    font-weight: 600;
+    font-size: 1.1rem;
+    background: #8a7860;
+    margin-top: 2.rem;
+    border-radius: 8px;
+    transition: 0.2 ease;
+}
+
+.login-form .login-button:hover{
+    background: #5a4a3a;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(90, 74, 58, 0.2);
+
+}
+
+.login-container .signup-text {
+    text-align: center;
+    font-weight: 500;
+    margin: 2rem 0 0.5rem;
+    color: #7a6b5a;
+}
+
+.login-container a {
+    color: #8a7860;
+    font-weight: 600;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.login-container a:hover {
+    color: #5a4a3a;
+    text-decoration: underline;
+}

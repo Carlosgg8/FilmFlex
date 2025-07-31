@@ -8,3 +8,12 @@
     display: grid;
     grid-template-columns: auto auto auto;
 }
+
+.no-posts-placeholder {
+  grid-column: 1 / -1; /* spans all grid columns */
+  padding: 50px 0;
+  text-align: center;
+  color: black;
+  font-size: 1.2rem;
+}
+

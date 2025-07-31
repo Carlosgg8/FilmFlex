@@ -46,7 +46,10 @@ const NavBar = () => {
         </div>
       </div>
       {showCreateModal && (
-        <CreatModal onClose={() => setShowCreateModal(false)} />
+        <CreatModal 
+          onClose={() => setShowCreateModal(false)}
+          
+        />
       )}
       {showNotificationModal && (
         <NotificationModal onClose={() => setShowNotificationModal(false)} />

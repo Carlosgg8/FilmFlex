@@ -72,7 +72,7 @@ function Feed() {
 
   return (
     <>
-      <NavBar />
+      
       <div className="feed-container">
         <FeedContent handleSelectPost={handleSelectPost} posts={posts} />
       </div>
