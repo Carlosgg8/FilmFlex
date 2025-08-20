@@ -3,7 +3,7 @@ import {
   createEntry,
   getAllEntries,
   getEntryById,
-  getUserEntries,        
+      
   getEntriesByUserId,    
   updateEntry,
   deleteEntry
@@ -13,7 +13,7 @@ import {
 const router = express.Router();
 
   router.get("/", authenticateJWT, getAllEntries);
-  router.get("/me", authenticateJWT, getUserEntries);
+
   router.get("/user/:userId", authenticateJWT, getEntriesByUserId);
   router.post("/", authenticateJWT, createEntry);
   router.get("/:id", authenticateJWT, getEntryById);

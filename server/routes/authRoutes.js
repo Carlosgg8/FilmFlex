@@ -84,6 +84,80 @@ errors)
 
  router.post("/google", handleGoogleLogin);   // POST /api/auth/google
 
+
+import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
+import User from "../models/User.js";
+
+router.post("/signup", async (req, res) => {
+  const { username, email, password } = req.body;
+  try {
+    // Check if username or email already exists
+    const existingUser = await User.findOne({ $or: [ { username }, { email } ] });
+    if (existingUser) {
+      return res.status(400).json({ message: "Username or email already taken" });
+    }
+    // Hash password
+    const hashedPassword = await bcrypt.hash(password, 10);
+    // Create user
+    const user = await User.create({ username, email, password: hashedPassword });
+    // Sign JWT
+    const token = jwt.sign(
+      { userId: user._id, username: user.username, email: user.email },
+      process.env.JWT_SECRET,
+      { expiresIn: "7d" }
+    );
+    res.json({
+      token,
+      user: { userId: user._id, username: user.username, email: user.email }
+    });
+  } catch (err) {
+    res.status(500).json({ message: "Signup failed", error: err.message });
+  }
+});
+
+router.get("/test", (req, res) => {
+  res.send("Auth route is working!");
+});
+
+router.post("/login", async (req, res) => {
+  const { usernameOrEmail, password } = req.body;
+  
+  try {
+    // Find user by either username or email
+    const user = await User.findOne({
+      $or: [
+        { username: usernameOrEmail },
+        { email: usernameOrEmail }
+      ]
+    });
+    
+    if (!user) {
+      return res.status(400).json({ message: "Invalid credentials" });
+    }
+    
+    // Check password
+    const isValidPassword = await bcrypt.compare(password, user.password);
+    if (!isValidPassword) {
+      return res.status(400).json({ message: "Invalid credentials" });
+    }
+    
+    // Sign JWT 
+    const token = jwt.sign(
+      { userId: user._id, username: user.username, email: user.email },
+      process.env.JWT_SECRET,
+      { expiresIn: "30d" } // jwt expires in 30 days
+    );
+    
+    res.json({
+      token,
+      user: { userId: user._id, username: user.username, email: user.email }
+    });
+  } catch (err) {
+    res.status(500).json({ message: "Login failed", error: err.message });
+  }
+});
+
  export default router;
 
  

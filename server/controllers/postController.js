@@ -38,14 +38,28 @@ export const getEntryById = async (req, res) => {
  */
 export const createEntry = async (req, res) => {
   try {
-    const { movieId, imageURL, caption, rating } = req.body;
+
+    console.log('=== CREATE ENTRY DEBUG ===');
+    console.log('Request headers:', req.headers);
+    console.log('Request body keys:', Object.keys(req.body || {}));
+    console.log('Body.reactionIMG exists:', !!req.body?.reactionIMG);
+    console.log('Body.reactionIMG type:', typeof req.body?.reactionIMG);
+    console.log('Body.reactionIMG length:', req.body?.reactionIMG?.length || 0);
+    console.log('Body.poster exists:', !!req.body?.poster);
+    console.log('Body.rating:', req.body?.rating);
+    console.log('Body.caption:', req.body?.caption);
+    console.log('User from JWT:', req.user);
+    console.log('==========================');
+
+    const { poster, reactionIMG, caption, rating } = req.body;
 
     const newEntry = new Post({
       user: req.user.userId,
-      movieId,
-      imageURL,
-      caption,
+      poster,
+      reactionIMG,
       rating,
+      caption,
+      createdAt: new Date()
     });
 
     await newEntry.save();

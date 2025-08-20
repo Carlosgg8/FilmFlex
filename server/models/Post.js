@@ -14,22 +14,25 @@ const postSchema = new mongoose.Schema(
       required: false, 
     },
 
-    movieId: { 
+    poster: { 
       type: String, 
       required: true 
     },
 
-    imageURL: { 
+    
+    reactionIMG: {
       type: String, 
-      required: true 
+      required: true
     },
 
+    //post caption
     caption: { 
       type: String, 
       trim: true, 
       maxlength: 500 
     },
 
+    //movie rating
     rating: { 
       type: Number, 
       required: true 
@@ -40,6 +43,8 @@ const postSchema = new mongoose.Schema(
       type: Number,
       default: 0
     },
+
+    createdAt: Date,
 
     // Array of comments
     comments: [

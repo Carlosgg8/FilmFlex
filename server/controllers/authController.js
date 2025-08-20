@@ -98,7 +98,7 @@ ticket: If verification is successful, this object contains a method getPayload(
      */
     res.json({
       token,
-      user: { name, email, picture }
+      user: { userId: user._id, name, email, picture }
     });
   } catch (err) {
     // Handle failed token verification or internal server errors
