@@ -1,31 +1,50 @@
 import React from "react";
 import './ProfileHeader.css';
 
-export default function ProfileHeader( {user} ) { 
+/**
+ * Profile header component displaying user info, stats, and bio
+ */
+export default function ProfileHeader( { user = {}, postCount = 0 } ) { 
     return(
         
             <div className="header-container">
+                {/* Left side - Profile picture */}
                 <div className="header-left">
                     <img className="profile-photo" src={user.picture} alt={user.name} />
                 </div>
 
+                {/* Right side - User info and stats */}
                 <div className="header-right">
+                    {/* Username and follow button */}
                     <div className="user-info">
                         <h2 className="username">{user.username} </h2>
                         <button className="follow-btn">Follow</button>
                     </div>
                     
+                    {/* Engagement statistics */}
                     <div className="user-counts">
-                        <span><strong>1,208</strong> posts</span>
-                        <span><strong>3M</strong> followers</span>
-                        <span><strong>880</strong> following</span>
+                        <span><strong>{postCount.toLocaleString()}</strong> posts</span>
+                        <span><strong>{(user.followers?.length || 0).toLocaleString()}</strong> followers</span>
+                        <span><strong>{(user.following?.length || 0).toLocaleString()}</strong> following</span>
                     </div>
                     
+                    {/* Bio and additional user details */}
                     <div className="user-description">
-                        <strong className="display-name">Alexandra Madison</strong>
-                        <p>🎤 Host of a podcast</p>
-                        <p>📍 Based in NY</p>
-                        <a href="#" className="profile-link">alexjon.com/links</a>
+                        <strong className="display-name">{user.name || 'Display Name'}</strong>
+                        {user.bio && <p>{user.bio}</p>}
+                        {user.location && <p>📍 {user.location}</p>}
+                        {/* Website link */}
+                        {user.website && (
+                            <a 
+                                href={user.website} 
+                                className="profile-link"
+                                target="_blank" 
+                                rel="noopener noreferrer"
+                            >
+                                {user.website.replace(/(^\w+:|^)\/\//, '')}
+                            </a>
+                        )}
+
                     </div>
                 </div>
             </div>

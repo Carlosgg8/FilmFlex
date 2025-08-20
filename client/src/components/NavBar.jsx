@@ -14,11 +14,15 @@ import {
 } from "../utils/navActions"
 import { AuthContext } from "../context/authContext";
 
+/**
+ * Main navigation bar component with logo, search, and action buttons
+ */
 const NavBar = () => {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showNotificationModal, setShowNotificationModal] = useState(false);
   const { user } = useContext(AuthContext); // get user from context
 
+  // Lock scroll when any modal is open
   useEffect(() => {
     if (showCreateModal || showNotificationModal) {
       document.body.style.overflow = "hidden";
@@ -34,10 +38,12 @@ const NavBar = () => {
     <div>
       <div className="navbar-container">
         <div className="nav-bar">
+          {/* App logo/home link */}
           <Link to="/" className="logo-section">Film Flex</Link>
           <div className="searchbar-section">
             <SearchBar />
           </div>
+          {/* Navigation action buttons */}
           <ActionSection
             onShowCreateModal={() => setShowCreateModal(true)}
             onShowNotificationModal={() => setShowNotificationModal(true)}
@@ -45,6 +51,7 @@ const NavBar = () => {
           />
         </div>
       </div>
+      {/* Conditionally render modals */}
       {showCreateModal && (
         <CreatModal 
           onClose={() => setShowCreateModal(false)}
@@ -58,6 +65,9 @@ const NavBar = () => {
   );
 };
 
+/**
+ * Search bar component with clickable wrapper for better UX
+ */
 const SearchBar = () => {
   const inputRef = useRef(null); 
   return (
@@ -76,21 +86,28 @@ const SearchBar = () => {
   );
 };
 
+/**
+ * Action buttons section for navigation (messages, notifications, create, profile)
+ */
 const ActionSection = ({ onShowCreateModal, onShowNotificationModal, userId }) => {
   const goMessage = useGoMessage();
   const goProfile = useGoProfile(userId);
 
   return (
     <div className="action-section">
+      {/* Messages navigation */}
       <div onClick={goMessage} className="messages">
         <img src={message} alt="message" className="messages" />
       </div>
+      {/* Notifications modal trigger */}
       <div onClick={onShowNotificationModal} className="notifications">
         <img src={bell} alt="notification" className="notifications" />
       </div>
+      {/* Create post modal trigger */}
       <div onClick={onShowCreateModal} className="create-post">
         <img src={create} alt="Make a post" className="create-post" />
       </div>
+      {/* Profile navigation */}
       <div onClick={goProfile} className="profile">
         <img src={profile} alt="profile" className="profile" />
       </div>

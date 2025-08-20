@@ -24,7 +24,9 @@
 .post-card {
   border: 1px solid rgb(87, 86, 86);
   border-radius: 4px;
-  
+  width: 100%;
+  max-width: 600px; /* Or whatever maximum you want */
+  margin: 0 auto; /* Center it */
 }
 
 .bar { 
@@ -140,10 +142,154 @@
 }
 
 
+/* PostCard Carousel Styles */
+.card-carousel-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
 
+.card-carousel-content {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
+/* Card Slide Containers */
+.card-slide-image-container {
+  width: 100%;
+  height: 450px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background-color: #f0f0f0;
+}
 
+/* More specific selector to override the general .photo class */
+.card-slide-image-container .photo {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center;
+  min-height: 100%;
+}
 
+.card-slide-rating-container {
+  width: 100%;
+  height: 450px; /* Match image height */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 0; /* Remove border radius to match other slides */
+}
 
+/* Card Rating Display */
+.card-rating-display {
+  text-align: center;
+  color: white;
+  padding: 2rem;
+}
 
+.card-rating-display h3 {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  font-weight: 300;
+}
 
+.card-stars-display {
+  display: flex;
+  justify-content: center;
+  gap: 0.3rem;
+  margin: 1rem 0;
+}
+
+.card-stars-display .star.rated {
+  color: #ffd700;
+}
+
+.card-stars-display .star.unrated {
+  color: rgba(255, 255, 255, 0.3);
+}
+
+.card-rating-text {
+  font-size: 1rem;
+  margin-top: 0.5rem;
+  opacity: 0.9;
+}
+
+/* Card Carousel Arrows */
+.card-carousel-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(0, 0, 0, 0.5);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 35px;
+  height: 35px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  z-index: 2;
+  opacity: 0;
+}
+
+.card-carousel-container:hover .card-carousel-arrow {
+  opacity: 1;
+}
+
+.card-carousel-arrow:hover {
+  background: rgba(0, 0, 0, 0.8);
+  transform: translateY(-50%) scale(1.1);
+}
+
+.card-carousel-arrow-left {
+  left: 0.5rem;
+}
+
+.card-carousel-arrow-right {
+  right: 0.5rem;
+}
+
+/* Card Carousel Indicators */
+.card-carousel-indicators {
+  position: absolute;
+  bottom: 0.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 0.3rem;
+  z-index: 2;
+}
+
+.card-indicator {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.card-indicator.active {
+  background: white;
+  border-color: white;
+}
+
+.card-indicator:hover {
+  border-color: white;
+  background: rgba(255, 255, 255, 0.5);
+}
+
+/* Ensure photo container has proper positioning */
+.photo-container {
+  position: relative;
+}

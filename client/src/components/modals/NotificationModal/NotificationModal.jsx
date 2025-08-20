@@ -3,8 +3,12 @@ import './NotificationModal.css';
 
 import Close from "@mui/icons-material/Close";
 
+/**
+ * Modal component for displaying user notifications
+ */
 export default function NotificationModal({ onClose }) {
 
+    // Mock notification data for testing
     const testNoti = [
         {
             id: 1,
@@ -23,6 +27,7 @@ export default function NotificationModal({ onClose }) {
 
     ];
 
+    // Handle clicking outside modal to close
     const onClickModal = (element) => {
         if (element.className === "notificationModal-container") {
             onClose();
@@ -48,6 +53,7 @@ export default function NotificationModal({ onClose }) {
 
     return(
         <div onClick={(e) => onClickModal(e.target)} className="notificationModal-container">
+            {/* Close button */}
             <div onClick={() => onClose()} className="close-modal hoverable">
                 <Close fontSize="large"/>
             </div>
@@ -56,6 +62,7 @@ export default function NotificationModal({ onClose }) {
                 <div className="notification-top"> Notifications!</div>
                 <div className="notification-content">
                     <div className="notifications">
+                        {/* Render each notification item */}
                         {testNoti.map((notification) => (
                             <div key={notification.id} className="notification-item">
                                 <p><strong>{notification.user}</strong>: {notification.message}</p>

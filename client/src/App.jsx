@@ -8,11 +8,14 @@ import MessagePage from "./pages/messages.jsx"
 import ProfilePage from "./pages/profile.jsx";
 import CreatePost from "./pages/createPost.jsx";
 import UsernameSetup from "./components/login/Username/UsernameSetup.jsx";
-import Signup from "./pages/signup.jsx";
+//import Signup from "./pages/signup.jsx";
 
 //import Dashboard from "./pages/Feed";
 import './App.css';;
 
+/**
+ * Main App component with authentication-based routing
+ */
 function App() {
   const { isAuthenticated } = useContext(AuthContext);
   const [authChecked, setAuthChecked] = useState(false);
@@ -27,6 +30,7 @@ function App() {
       location.pathname.startsWith(route)
     );
 
+    // Redirect to login if accessing protected route without token
     if (isProtectedRoute && !token) {
       window.location.replace('/login');
       return;
@@ -41,21 +45,25 @@ function App() {
 
   return (
     <div className="App">
-
+      {/* Show navigation bar only for authenticated users */}
       {isAuthenticated && <NavBar />}
       <Routes>
+        {/* Root route - redirect to feed if authenticated, show login otherwise */}
         <Route
           path="/"
           element={isAuthenticated ? <Navigate to="/feed" replace /> : <Login />}
         />
+        {/* Login route - redirect to feed if already authenticated */}
         <Route
           path="/login"
           element={isAuthenticated ? <Navigate to="/feed" replace /> : <Login />}
         />
+        {/* Signup route - redirect to feed if already authenticated */}
         <Route
           path="/signup"
           element={isAuthenticated ? <Navigate to="/feed" replace /> : <Signup/> }
         />
+        {/* Protected routes - require authentication */}
         <Route
           path="/feed"
           element={isAuthenticated ? <Feed /> : <Navigate to="/login" replace />}

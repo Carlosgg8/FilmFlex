@@ -2,6 +2,9 @@ import { useContext, useState } from "react";
 import { AuthContext } from "../../../context/authContext";
 import api from "../../../services/api";
 
+/**
+ * Component for setting up a username for users who don't have one yet
+ */
 export default function UsernameSetup() {
   const { user, login } = useContext(AuthContext);
   const [username, setUsername] = useState("");

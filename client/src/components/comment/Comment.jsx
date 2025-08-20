@@ -3,6 +3,9 @@ import React from "react";
 import './Comment.css'
 
 
+/**
+ * Renders a single comment with user profile image, username, message, and like count
+ */
 export default function CommentItem({comment}){
     return(
         <div className="comment-container">
@@ -13,6 +16,7 @@ export default function CommentItem({comment}){
                         <span className="">{comment.message}</span>
                     </div>
                     <div className="comment-details ">
+                         {/* Only show like count if comment has likes */}
                         {comment.likes > 0 && (
                             <span className="hoverable">
                                 {comment.likes} {comment.likes > 1 ? "likes" : "like"}
@@ -21,6 +25,7 @@ export default function CommentItem({comment}){
                         <span className="hoverable">Reply</span>
                     </div>
                 </div>
+                /
 
         </div>
     );
