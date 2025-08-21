@@ -1,5 +1,8 @@
 import Post from "../models/Post.js";
 
+import User from '../models/User.js'; 
+
+
 /**
  * @route   GET /api/posts
  * @desc    Fetch all posts (filters can be added later if needed)
@@ -51,10 +54,18 @@ export const createEntry = async (req, res) => {
     console.log('User from JWT:', req.user);
     console.log('==========================');
 
-    const { poster, reactionIMG, caption, rating } = req.body;
+     const { poster, reactionIMG, caption, rating } = req.body;
+
+    // Get user info to populate username and profile image
+    const user = await User.findById(req.user.userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
 
     const newEntry = new Post({
       user: req.user.userId,
+      username: user.username, // Add username
+      user_profile_image_url: user.picture, // Add profile image URL
       poster,
       reactionIMG,
       rating,

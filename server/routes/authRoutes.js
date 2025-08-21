@@ -2,6 +2,9 @@
  // Defines authentication routes for the ThoughtStream app using Google OAuth2 via Passport.js
  import express from "express";
  import passport from "passport";
+ import bcrypt from "bcryptjs";
+ import jwt from "jsonwebtoken";
+ import User from "../models/User.js";
  import { handleGoogleLogin } from "../controllers/authController.js";
  // Create a new Express router instance
  const router = express.Router();
@@ -84,11 +87,6 @@ errors)
 
  router.post("/google", handleGoogleLogin);   // POST /api/auth/google
 
-
-import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
-import User from "../models/User.js";
-
 router.post("/signup", async (req, res) => {
   const { username, email, password } = req.body;
   try {
@@ -100,7 +98,12 @@ router.post("/signup", async (req, res) => {
     // Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
     // Create user
-    const user = await User.create({ username, email, password: hashedPassword });
+    const user = await User.create({
+       username,
+        email,
+         password: hashedPassword,
+        "picture": "https://randomuser.me/api/portraits/men/2.jpg"
+       });
     // Sign JWT
     const token = jwt.sign(
       { userId: user._id, username: user.username, email: user.email },
@@ -109,7 +112,11 @@ router.post("/signup", async (req, res) => {
     );
     res.json({
       token,
-      user: { userId: user._id, username: user.username, email: user.email }
+      user: { 
+        userId: user._id,
+        username: user.username,
+        email: user.email,
+        picture: user.picture }
     });
   } catch (err) {
     res.status(500).json({ message: "Signup failed", error: err.message });
@@ -124,13 +131,13 @@ router.post("/login", async (req, res) => {
   const { usernameOrEmail, password } = req.body;
   
   try {
-    // Find user by either username or email
+    // Find user by either username or email, include picture field
     const user = await User.findOne({
       $or: [
         { username: usernameOrEmail },
         { email: usernameOrEmail }
       ]
-    });
+    }).select('username email password picture bio followers following'); // Include picture in select
     
     if (!user) {
       return res.status(400).json({ message: "Invalid credentials" });
@@ -151,7 +158,15 @@ router.post("/login", async (req, res) => {
     
     res.json({
       token,
-      user: { userId: user._id, username: user.username, email: user.email }
+      user: { 
+        userId: user._id, 
+        username: user.username, 
+        email: user.email,
+        picture: user.picture, // Include picture in response
+        bio: user.bio,
+        followers: user.followers,
+        following: user.following
+      }
     });
   } catch (err) {
     res.status(500).json({ message: "Login failed", error: err.message });

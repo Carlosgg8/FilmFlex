@@ -9,6 +9,11 @@ const postSchema = new mongoose.Schema(
       required: false
     },
 
+    username: {
+      type: String,
+      required: true
+    },
+
     user_profile_image_url: {
       type: String,
       required: false, 
