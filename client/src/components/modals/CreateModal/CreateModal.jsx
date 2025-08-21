@@ -3,6 +3,7 @@ import './CreateModal.css';
 import Close from "@mui/icons-material/Close";
 import StarRate from "@mui/icons-material/StarRate";
 
+
 /**
  * Modal component for creating movie reviews with poster, reaction image, rating, and caption
  */

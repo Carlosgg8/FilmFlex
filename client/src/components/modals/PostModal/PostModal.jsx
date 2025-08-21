@@ -159,8 +159,8 @@ export default function PostModal({ onClose, post}) {
                     {/* User info header */}
                     <div className="modal-top-section modal-section">
                         <img className="profile-image hoverable" src={post.user_profile_image_url}/>
-                        <div className="modal-username">{post.user}</div>
-                        <div>Follow</div>
+                        <div className="modal-username">{post.username}</div>
+                        <div className="follow-btn">Follow</div>
                         <div className="spacer"></div>
                         <MoreHoriz/>
                     </div>
@@ -170,7 +170,7 @@ export default function PostModal({ onClose, post}) {
                             <img className="profile-image hoverable" src={post.user_profile_image_url}/>
                             <div>
                                 <div>
-                                    <span className="modal-username hoverable">{post.user}</span>
+                                    <span className="modal-username hoverable">{post.username}</span>
                                     <span className="post-caption">{post.caption}</span>
                                 </div>
                             </div>

@@ -8,7 +8,7 @@ import MessagePage from "./pages/messages.jsx"
 import ProfilePage from "./pages/profile.jsx";
 import CreatePost from "./pages/createPost.jsx";
 import UsernameSetup from "./components/login/Username/UsernameSetup.jsx";
-//import Signup from "./pages/signup.jsx";
+import Signup from "./pages/Signup.jsx";
 
 //import Dashboard from "./pages/Feed";
 import './App.css';;

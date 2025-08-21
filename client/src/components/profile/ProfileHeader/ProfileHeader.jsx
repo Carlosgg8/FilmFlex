@@ -5,12 +5,16 @@ import './ProfileHeader.css';
  * Profile header component displaying user info, stats, and bio
  */
 export default function ProfileHeader( { user = {}, postCount = 0 } ) { 
+    //console.log("User object in ProfileHeader:", user);
     return(
         
             <div className="header-container">
                 {/* Left side - Profile picture */}
                 <div className="header-left">
-                    <img className="profile-photo" src={user.picture} alt={user.name} />
+                    <img className="profile-photo" 
+                        src={user.picture || "https://via.placeholder.com/150/0000FF/FFFFFF?text=No+Pic"} 
+                        alt={user.name || "User"} 
+                    />
                 </div>
 
                 {/* Right side - User info and stats */}

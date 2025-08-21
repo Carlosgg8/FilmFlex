@@ -12,7 +12,7 @@ import {
   useCreatePost,
   useGoProfile,
 } from "../utils/navActions"
-import { AuthContext } from "../context/authContext";
+import { AuthContext} from "../context/authContext";
 
 /**
  * Main navigation bar component with logo, search, and action buttons
@@ -20,7 +20,7 @@ import { AuthContext } from "../context/authContext";
 const NavBar = () => {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showNotificationModal, setShowNotificationModal] = useState(false);
-  const { user } = useContext(AuthContext); // get user from context
+  const { user, logout } = useContext(AuthContext); // get user from context
 
   // Lock scroll when any modal is open
   useEffect(() => {
@@ -33,6 +33,10 @@ const NavBar = () => {
       document.body.style.overflow = "auto";
     };
   }, [showCreateModal, showNotificationModal]);
+
+  const handleLogout = () => {
+    logout(); // Call logout 
+  };
 
   return (
     <div>
@@ -47,6 +51,7 @@ const NavBar = () => {
           <ActionSection
             onShowCreateModal={() => setShowCreateModal(true)}
             onShowNotificationModal={() => setShowNotificationModal(true)}
+            onLogout={handleLogout}  
             userId={user && user._id}
           />
         </div>
@@ -89,7 +94,7 @@ const SearchBar = () => {
 /**
  * Action buttons section for navigation (messages, notifications, create, profile)
  */
-const ActionSection = ({ onShowCreateModal, onShowNotificationModal, userId }) => {
+const ActionSection = ({ onShowCreateModal, onShowNotificationModal, onLogout, userId }) => {
   const goMessage = useGoMessage();
   const goProfile = useGoProfile(userId);
 
@@ -110,6 +115,10 @@ const ActionSection = ({ onShowCreateModal, onShowNotificationModal, userId }) =
       {/* Profile navigation */}
       <div onClick={goProfile} className="profile">
         <img src={profile} alt="profile" className="profile" />
+      </div>
+      {/* Logout button */}
+      <div onClick={onLogout} className="logout">
+        <span className="logout-text">Log out</span>
       </div>
     </div>
   );
