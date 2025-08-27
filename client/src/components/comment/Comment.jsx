@@ -25,7 +25,6 @@ export default function CommentItem({comment}){
                         <span className="hoverable">Reply</span>
                     </div>
                 </div>
-                /
 
         </div>
     );

@@ -12,9 +12,11 @@ import StarRate from "@mui/icons-material/StarRate";
 import ArrowBackIos from "@mui/icons-material/ArrowBackIos";
 import ArrowForwardIos from "@mui/icons-material/ArrowForwardIos"; 
 
-export default function PostModal({ onClose, post}) {
+export default function PostModal({ onClose, post, onAddComment, user}) {
+
 
     const [currentSlide, setCurrentSlide] = useState(0);
+    const [newComment, setNewComment] = useState("");
 
     // Create slides array based on available content
     const slides = [
@@ -57,6 +59,37 @@ export default function PostModal({ onClose, post}) {
     // Navigate to previous slide in carousel
     const prevSlide = () => {
         setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length);
+    };
+
+    // Handle adding a new comment
+    const handleAddComment = (e) => {
+        e.preventDefault();
+        
+        // Don't add empty comments
+        if (!newComment.trim()) return;
+
+        // Create new comment object
+        const comment = {
+            message: newComment.trim(),
+            profile_name: user?.username || user?.name || "Anonymous", // Use actual logged-in user
+            profile_image_url: user?.profileImage || user?.user_profile_image_url || "https://randomuser.me/api/portraits/women/4.jpg", // Use actual user image
+            likes: 0
+        };
+
+        // Call parent function to update the post
+        if (onAddComment) {
+            onAddComment(post.id, comment);
+        }
+
+        // Clear the input
+        setNewComment("");
+    };
+
+    // Handle Enter key press
+    const handleKeyPress = (e) => {
+        if (e.key === 'Enter') {
+            handleAddComment(e);
+        }
     };
 
     // Render content based on slide type
@@ -193,11 +226,22 @@ export default function PostModal({ onClose, post}) {
                     </div>
                     
                     <div className="modal-write-section">
-                        <input 
-                            type="text" 
-                            placeholder="Add a comment..."
-                            className="comment-input"
-                        />
+                        <form onSubmit={handleAddComment}>
+                            <input 
+                                type="text" 
+                                placeholder="Add a comment..."
+                                className="comment-input"
+                                value={newComment}
+                                onChange={(e) => setNewComment(e.target.value)}
+                                onKeyPress={handleKeyPress}
+                            />
+                            <button 
+                                type="submit" 
+                                style={{ display: 'none' }} // Hidden
+                            >
+                                Submit
+                            </button>
+                        </form>
                     </div>
                 </div>
             </div>

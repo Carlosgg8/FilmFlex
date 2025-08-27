@@ -22,6 +22,7 @@ function ProfilePage() {
     const [selectedPost, setSelectedPost] = useState(null);
     const [searchValue, setSearchValue] = useState("");
     const [postCount, setPostCount] = useState(0); 
+    const [posts, setPosts] = useState([]);
     
     // Handle post selection and modal opening
     const handleSelectPost = (post) => {
@@ -47,6 +48,30 @@ function ProfilePage() {
         setPostCount(count);
     };
 
+    const handleAddComment = (postId, newComment) => {
+        setPosts(prevPosts => 
+        prevPosts.map(post => {
+            if (post.id === postId) {
+                const updatedPost = {
+                    ...post,
+                    comments: [...(post.comments || []), newComment]  
+                };
+                    // selectedPost if it's the same post
+                    if (selectedPost && selectedPost.id === postId) {
+                        setSelectedPost(updatedPost);
+                    }
+                    return updatedPost;
+                }
+                return post;
+            })
+        );
+    };
+
+    // Handle posts being loaded from Content component
+    const handlePostsLoaded = (loadedPosts) => {
+        setPosts(loadedPosts);
+    };
+
     return (
     <>
         <NavBar />
@@ -61,10 +86,17 @@ function ProfilePage() {
                 userId={user?.id || user?.userId} 
                 handleSelectPost={handleSelectPost}
                 onPostCountChange={onPostCountChange}
+                posts={posts} 
+                onPostsLoaded={handlePostsLoaded} 
             />
         </div>
         {/* Conditionally render post modal */}
-        {isModalOpen && <PostModal post={selectedPost} onClose={handleCloseModal} />}
+        {isModalOpen && <PostModal 
+            post={selectedPost}
+            onClose={handleCloseModal} 
+            onAddComment={handleAddComment}
+            user={user} // Pass the logged-in user
+        />}
     </>
 );
 }
