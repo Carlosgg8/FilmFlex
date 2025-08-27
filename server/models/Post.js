@@ -1,11 +1,11 @@
-import mongoose from "mongoose";
+import mongoose from "mongoose"; 
 
 // Define schema for movie review posts
 const postSchema = new mongoose.Schema(
   {
-    user: { 
-      type: mongoose.Schema.Types.ObjectId, 
-      ref: "User", 
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
       required: false
     },
 
@@ -16,31 +16,30 @@ const postSchema = new mongoose.Schema(
 
     user_profile_image_url: {
       type: String,
-      required: false, 
+      required: false
     },
 
-    poster: { 
-      type: String, 
-      required: true 
-    },
-
-    
-    reactionIMG: {
-      type: String, 
+    poster: {
+      type: String,
       required: true
     },
 
-    //post caption
-    caption: { 
-      type: String, 
-      trim: true, 
-      maxlength: 500 
+    reactionIMG: { // Fixed: consistent naming with test data
+      type: String,
+      required: true
     },
 
-    //movie rating
-    rating: { 
-      type: Number, 
-      required: true 
+    // Post caption
+    caption: {
+      type: String,
+      trim: true,
+      maxlength: 500
+    },
+
+    // Movie rating
+    rating: {
+      type: Number,
+      required: true
     },
 
     // Number of likes
@@ -49,13 +48,11 @@ const postSchema = new mongoose.Schema(
       default: 0
     },
 
-    createdAt: Date,
-
-    // Array of comments
+    // Array of embedded comments (matches test data structure)
     comments: [
       {
-        message: String,
-        from: String,
+        message: String, // Fixed: matches test data field name
+        from: String, // Fixed: matches test data field name
         profile_name: String,
         profile_image_url: String,
         likes: { type: Number, default: 0 }

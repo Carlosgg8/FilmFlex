@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose from "mongoose"; 
 
 const commentSchema = new mongoose.Schema(
   {
@@ -6,14 +6,14 @@ const commentSchema = new mongoose.Schema(
     post: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Post",
-      required: true,
+      required: true
     },
 
     // User who wrote the comment (optional if you allow anonymous)
     user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
-      required: false,
+      required: false
     },
 
     // Actual comment text
@@ -21,24 +21,24 @@ const commentSchema = new mongoose.Schema(
       type: String,
       trim: true,
       maxlength: 500,
-      required: true,
+      required: true
     },
 
-    // Snapshot of the user’s display name at the time of commenting
+    // Snapshot of the user's display name at the time of commenting
     profile_name: {
-      type: String,
+      type: String
     },
 
     // Snapshot of user avatar URL (optional)
     profile_image_url: {
-      type: String,
+      type: String
     },
 
     // Simple like counter
     likes: {
       type: Number,
-      default: 0,
-    },
+      default: 0
+    }
   },
   { timestamps: true } // adds createdAt and updatedAt
 );
