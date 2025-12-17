@@ -278,6 +278,21 @@
     color: #8e8e8e;
 }
 
+/* Hoverable elements */
+.hoverable {
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+}
+
+.hoverable:hover {
+    opacity: 0.7;
+}
+
+/* Liked heart styling */
+.liked {
+    color: #e91e63 !important;
+}
+
 /* Post Caption Styling */
 .post-caption {
     margin-left: 0.5rem;

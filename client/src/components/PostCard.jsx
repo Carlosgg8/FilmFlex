@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import threeDots from "../assets/3dots.png";
 import Favorite from "@mui/icons-material/Favorite";
 import ModeComment from "@mui/icons-material/ModeComment";
@@ -7,17 +7,18 @@ import BookMark from "@mui/icons-material/BookMark";
 import StarRate from "@mui/icons-material/StarRate";
 import ArrowBackIos from "@mui/icons-material/ArrowBackIos";
 import ArrowForwardIos from "@mui/icons-material/ArrowForwardIos";
+import { AuthContext } from "../context/authContext";
 
 /**
  * Main post card component for feed display with carousel functionality
  */
-function PostCard({post, onCommentClick}) {
+function PostCard({post, onCommentClick, onLikePost}) {
   return (
     <div className="post-card">
       <Header profileImage={post.user_profile_image_url || post.profileImage} user={post.user} />
       <PhotoCarousel post={post} />
       <Caption text={post.caption} />
-      <ActionBar onCommentClick={() => onCommentClick(post)}/>
+      <ActionBar onCommentClick={() => onCommentClick(post)} onLikePost={() => onLikePost(post._id || post.id)} post={post} />
     </div>
   );
 }
@@ -162,12 +163,28 @@ const PhotoCarousel = ({ post }) => {
 /**
  * Action bar with like, comment, share, and bookmark buttons
  */
-const ActionBar = ( {onCommentClick} ) => {
+const ActionBar = ( {onCommentClick, onLikePost, post} ) => {
+  const { user } = useContext(AuthContext);
+  
+  // Check if current user has liked this post
+  const isLiked = Array.isArray(post.likes) ? post.likes.some(id => id.toString() === user?.userId?.toString()) : false;
+  
+  const handleLike = () => {
+    if (onLikePost) {
+      onLikePost();
+    }
+  };
+
   return(
     <div className="bar">
       {/* Left side actions */}
       <div className="bar-left">
-        <Favorite alt="heart" className="action-icon"/>
+        <Favorite 
+          alt="heart" 
+          className={`action-icon ${isLiked ? 'liked' : ''}`}
+          onClick={handleLike}
+          style={{ color: isLiked ? '#e91e63' : 'inherit' }}
+        />
         <ModeComment alt="comment" className="action-icon" onClick={onCommentClick}/>
         <Send alt="send" className="action-icon"/>
       </div>

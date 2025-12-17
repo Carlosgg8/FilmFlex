@@ -144,3 +144,43 @@ export const getEntriesByUserId = async (req, res) => {
     res.status(500).json({ message: "Failed to fetch user posts", error });
   }
 };
+
+/**
+ * @route   POST /api/posts/:id/like
+ * @desc    Like or unlike a post
+ * @access  Private
+ */
+export const likeEntry = async (req, res) => {
+  try {
+    const post = await Post.findById(req.params.id);
+    if (!post) {
+      return res.status(404).json({ message: "Post not found" });
+    }
+
+    const userId = req.user.userId;
+
+    // Handle backward compatibility: if likes is a number, convert to array
+    if (typeof post.likes === 'number') {
+      post.likes = [];
+    } else if (!Array.isArray(post.likes)) {
+      post.likes = [];
+    }
+
+    // Check if user has liked (convert ObjectIds to strings for comparison)
+    const userIndex = post.likes.findIndex(id => id.toString() === userId.toString());
+
+    if (userIndex > -1) {
+      // User already liked, remove like
+      post.likes.splice(userIndex, 1);
+    } else {
+      // User hasn't liked, add like
+      post.likes.push(userId);
+    }
+
+    await post.save();
+    res.status(200).json({ likes: post.likes });
+  } catch (error) {
+    console.error('Like error:', error);
+    res.status(500).json({ message: "Failed to like post", error: error.message });
+  }
+};

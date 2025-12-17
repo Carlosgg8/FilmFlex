@@ -3,7 +3,8 @@
   margin: 0 auto;
   padding: 0 16px;
   padding-top: 15px;
-
+  background-color: #fafafa;
+  min-height: 100vh;
 }
 
 .feed-content {
@@ -17,16 +18,24 @@
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 16px;
   padding: 16px;
-  background-color: rgb(253, 253, 253);
+  background-color: #fafafa;
   padding-top: 30px;
 }
 
 .post-card {
-  border: 1px solid rgb(87, 86, 86);
-  border-radius: 4px;
+  background-color: white;
+  border: 1px solid #e1e1e1;
+  border-radius: 8px;
   width: 100%;
-  max-width: 600px; /* Or whatever maximum you want */
-  margin: 0 auto; /* Center it */
+  max-width: 600px;
+  margin: 0 auto;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transition: box-shadow 0.3s ease;
+}
+
+.post-card:hover {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
 }
 
 .bar { 
@@ -66,6 +75,25 @@
   width: 1.5em;
   height: auto;
   margin-right: 1.2em;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.action-icon:hover {
+  transform: scale(1.1);
+}
+
+.action-icon.liked {
+  color: #e91e63;
+}
+
+/* Caption styling */
+.caption {
+  padding: 12px 15px;
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.4;
+  word-wrap: break-word;
 }
 
 .action-icon-right{

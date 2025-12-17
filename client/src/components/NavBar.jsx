@@ -52,7 +52,7 @@ const NavBar = () => {
             onShowCreateModal={() => setShowCreateModal(true)}
             onShowNotificationModal={() => setShowNotificationModal(true)}
             onLogout={handleLogout}  
-            userId={user && user._id}
+            userId={user && user.userId}
           />
         </div>
       </div>

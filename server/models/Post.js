@@ -42,11 +42,11 @@ const postSchema = new mongoose.Schema(
       required: true
     },
 
-    // Number of likes
-    likes: {
-      type: Number,
-      default: 0
-    },
+    // Likes as array of user IDs
+    likes: [{
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User"
+    }],
 
     // Array of embedded comments (matches test data structure)
     comments: [

@@ -20,19 +20,18 @@ export default function ProfilePost({ post, postHandler }) {
   return (
     <div onClick={handleClick} className="post-container">
       <div className="post">
-        {/* Display poster as background image */}
-        <div
+        {/* Display poster as img tag for better compatibility */}
+        <img
           className="post-image"
-          style={{ 
-            backgroundImage: `url(${post.poster})`
-          }}
+          src={post.poster}
+          alt="Post"
         />
       </div>
       {/* Hover overlay showing engagement stats */}
       <div className="post-overlay">
         <span>
           <Favorite/>
-          {post.likes || 0}
+          {Array.isArray(post.likes) ? post.likes.length : (post.likes || 0)}
         </span>
         <span>
           <ModeComment/>

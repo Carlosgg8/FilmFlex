@@ -13,7 +13,6 @@ export default function Content({ userId, handleSelectPost, onPostCountChange, p
 
   useEffect(() => {
     if (!userId) {
-      console.log('userId is not available yet:', userId);
       return; // Don't fetch if userId is undefined
     }
     
@@ -67,7 +66,7 @@ export default function Content({ userId, handleSelectPost, onPostCountChange, p
           // Render posts in grid layout
           displayPosts.map((post, index) => (
             <ProfilePost 
-              key={post.id || index} // Use post.id if available, fallback to index
+              key={post._id || index} // Use post._id if available, fallback to index
               post={post} 
               postHandler={handleSelectPost}
             />

@@ -7,10 +7,9 @@
     width: 300px;
     height: 300px;
     display: block;
-
-    background-position: center;
-    background-size: cover;
-
+    object-fit: contain;
+    object-position: center;
+    background-color: #f0f0f0; /* Light background for images that don't fill the space */
 }
 .post-container:hover{
     cursor: pointer;
@@ -34,15 +33,15 @@
     opacity: 0;
 }
 
-.post-overlay span:first-child{
-    margin-right: 15px;
-}
-
 .post-overlay span{
     display: flex;
     align-items: center;
+    font-size: 16px;
+    font-weight: 600;
+    color: white;
+    text-shadow: 0 0 3px rgba(0,0,0,0.5);
 }
 
-.post-overlay span svg{
-    margin-right: 5px;
+.post-overlay span:not(:last-child){
+    margin-right: 15px;
 }

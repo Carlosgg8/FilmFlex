@@ -8,6 +8,7 @@ import Content from "../components/profile/content/Content";
 import PostModal from '../components/modals/PostModal/PostModal.jsx'
 import ProfileHeader from "../components/profile/ProfileHeader/ProfileHeader";
 import NavBar from "../components/NavBar.jsx";
+import { postAPI } from "../services/api.js";
 
 import '../components/profile/content//Content.css'
 
@@ -67,6 +68,76 @@ function ProfilePage() {
         );
     };
 
+    // Handle liking a post
+    const handleLikePost = async (postId) => {
+        // Check if this is a test post (id is a number, not ObjectId)
+        const isTestPost = typeof postId === 'number' || (typeof postId === 'string' && /^\d+$/.test(postId));
+        
+        if (isTestPost) {
+            // Handle test post likes locally (no API call)
+            setPosts(prevPosts => 
+                prevPosts.map(post => {
+                    if ((post._id || post.id) === postId) {
+                        const currentLikes = Array.isArray(post.likes) ? post.likes : [];
+                        const userId = user?.userId;
+                        
+                        // Check if user already liked
+                        const userIndex = currentLikes.findIndex(id => id.toString() === userId?.toString());
+                        let newLikes;
+                        
+                        if (userIndex > -1) {
+                            // Unlike: remove user from likes
+                            newLikes = [...currentLikes];
+                            newLikes.splice(userIndex, 1);
+                        } else {
+                            // Like: add user to likes
+                            newLikes = [...currentLikes, userId];
+                        }
+                        
+                        const updatedPost = {
+                            ...post,
+                            likes: newLikes
+                        };
+                        
+                        // Update selectedPost if it's the same post
+                        if (selectedPost && (selectedPost._id || selectedPost.id) === postId) {
+                            setSelectedPost(updatedPost);
+                        }
+                        
+                        return updatedPost;
+                    }
+                    return post;
+                })
+            );
+            return;
+        }
+
+        // Handle real posts with API call
+        try {
+            const response = await postAPI.likePost(postId);
+            const updatedLikes = response.data.likes;
+            
+            setPosts(prevPosts => 
+                prevPosts.map(post => {
+                    if (post._id === postId) {
+                        const updatedPost = {
+                            ...post,
+                            likes: updatedLikes
+                        };
+                        // Update selectedPost if it's the same post
+                        if (selectedPost && selectedPost._id === postId) {
+                            setSelectedPost(updatedPost);
+                        }
+                        return updatedPost;
+                    }
+                    return post;
+                })
+            );
+        } catch (err) {
+            console.error('Error liking post:', err);
+        }
+    };
+
     // Handle posts being loaded from Content component
     const handlePostsLoaded = (loadedPosts) => {
         setPosts(loadedPosts);
@@ -83,7 +154,7 @@ function ProfilePage() {
             />
             {/* Content area displaying user's posts */}
             <Content 
-                userId={user?.id || user?.userId} 
+                userId={userId || user?.id || user?.userId} 
                 handleSelectPost={handleSelectPost}
                 onPostCountChange={onPostCountChange}
                 posts={posts} 
@@ -95,6 +166,7 @@ function ProfilePage() {
             post={selectedPost}
             onClose={handleCloseModal} 
             onAddComment={handleAddComment}
+            onLikePost={handleLikePost}
             user={user} // Pass the logged-in user
         />}
     </>

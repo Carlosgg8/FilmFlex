@@ -12,11 +12,22 @@ import StarRate from "@mui/icons-material/StarRate";
 import ArrowBackIos from "@mui/icons-material/ArrowBackIos";
 import ArrowForwardIos from "@mui/icons-material/ArrowForwardIos"; 
 
-export default function PostModal({ onClose, post, onAddComment, user}) {
+export default function PostModal({ onClose, post, onAddComment, onLikePost, user}) {
 
 
     const [currentSlide, setCurrentSlide] = useState(0);
     const [newComment, setNewComment] = useState("");
+
+    // Check if current user has liked this post
+    const isLiked = Array.isArray(post.likes) ? post.likes.some(id => id.toString() === user?.userId?.toString()) : false;
+    const likesCount = Array.isArray(post.likes) ? post.likes.length : (typeof post.likes === 'number' ? post.likes : 0);
+
+    // Handle liking/unliking a post
+    const handleLike = async () => {
+        if (onLikePost) {
+            await onLikePost(post._id);
+        }
+    };
 
     // Create slides array based on available content
     const slides = [
@@ -216,13 +227,17 @@ export default function PostModal({ onClose, post, onAddComment, user}) {
                     {/* Like and action buttons */}
                     <div className="modal-detail-section modal-section">
                         <div className="detail-actions">
-                            <Favorite className="hoverable"/>
+                            <Favorite 
+                                className={`hoverable ${isLiked ? 'liked' : ''}`}
+                                onClick={handleLike}
+                                style={{ color: isLiked ? '#e91e63' : 'inherit' }}
+                            />
                             <ModeComment className="hoverable"/>
                             <Send className="hoverable"/>
                             <div className="spacer"></div>
                             <BookMark className="hoverable"/>
                         </div>
-                        <span>{post.likes} Likes</span>
+                        <span>{likesCount} Likes</span>
                     </div>
                     
                     <div className="modal-write-section">

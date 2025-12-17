@@ -48,4 +48,25 @@ Authorization: Bearer <token>
  * Example usage:
  * api.get("/diary") or api.post("/diary", { title, content })
  */
+
+// API functions for posts
+export const postAPI = {
+  // Get all posts
+  getAllPosts: () => api.get('/api/posts'),
+  
+  // Get posts by user ID
+  getPostsByUser: (userId) => api.get(`/api/posts/user/${userId}`),
+  
+  // Like/unlike a post
+  likePost: (postId) => api.post(`/api/posts/${postId}/like`),
+  
+  // Create a new post
+  createPost: (postData) => api.post('/api/posts', postData),
+  
+  // Update a post
+  updatePost: (postId, postData) => api.put(`/api/posts/${postId}`, postData),
+  
+  // Delete a post
+  deletePost: (postId) => api.delete(`/api/posts/${postId}`)
+};
  export default api;

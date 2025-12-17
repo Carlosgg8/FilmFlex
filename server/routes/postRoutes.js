@@ -6,7 +6,8 @@ import {
       
   getEntriesByUserId,    
   updateEntry,
-  deleteEntry
+  deleteEntry,
+  likeEntry
 } from "../controllers/postController.js"; 
  import authenticateJWT from "../middleware/authMiddleware.js";
 
@@ -19,5 +20,6 @@ const router = express.Router();
   router.get("/:id", authenticateJWT, getEntryById);
   router.put("/:id", authenticateJWT, updateEntry);
   router.delete("/:id", authenticateJWT, deleteEntry);
+  router.post("/:id/like", authenticateJWT, likeEntry);
 
 export default router;
