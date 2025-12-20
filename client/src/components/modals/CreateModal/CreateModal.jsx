@@ -33,17 +33,50 @@ export default function CreateModal({ onClose }) {
         };
     }, []);
 
+    /**
+     * Compress image to reduce file size before uploading
+     * Resizes to max 800px width and compresses to 70% quality
+     */
+    const compressImage = (file, maxWidth = 800, quality = 0.7) => {
+        return new Promise((resolve) => {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const img = new Image();
+                img.onload = () => {
+                    // Calculate new dimensions
+                    let width = img.width;
+                    let height = img.height;
+                    
+                    if (width > maxWidth) {
+                        height = (height * maxWidth) / width;
+                        width = maxWidth;
+                    }
+                    
+                    // Create canvas and draw resized image
+                    const canvas = document.createElement('canvas');
+                    canvas.width = width;
+                    canvas.height = height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, width, height);
+                    
+                    // Convert to compressed base64
+                    const compressedDataUrl = canvas.toDataURL('image/jpeg', quality);
+                    resolve(compressedDataUrl);
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        });
+    };
+
     // Handle image upload for both poster and reaction images
-    const handleImageUpload = (type) => (e) => {
+    const handleImageUpload = (type) => async (e) => {
         const file = e.target.files[0];
         if (!file) return;
 
-        // Convert uploaded file to base64 data URL for preview
-        const reader = new FileReader();
-        reader.onload = (event) => {
-            setFormData(prev => ({ ...prev, [type]: event.target.result }));
-        };
-        reader.readAsDataURL(file);
+        // Compress image before storing
+        const compressedImage = await compressImage(file);
+        setFormData(prev => ({ ...prev, [type]: compressedImage }));
     };
 
     const handlePost = async () => {
@@ -97,6 +130,10 @@ export default function CreateModal({ onClose }) {
         // Success
         const createdPost = await response.json();
         console.log("Created post:", createdPost);
+        
+        // Notify other components that a new post was created
+        window.dispatchEvent(new CustomEvent('postCreated'));
+        
         onClose();
         
     } catch (error) {

@@ -127,10 +127,11 @@ export const deleteEntry = async (req, res) => {
       return res.status(403).json({ message: "Forbidden" });
     }
 
-    await entry.remove();
+    await Post.findByIdAndDelete(req.params.id);
     res.status(200).json({ message: "Entry deleted successfully" });
   } catch (error) {
-    res.status(500).json({ message: "Entry deletion failed" });
+    console.error('Delete error:', error);
+    res.status(500).json({ message: "Entry deletion failed", error: error.message });
   }
 };
 
@@ -182,5 +183,100 @@ export const likeEntry = async (req, res) => {
   } catch (error) {
     console.error('Like error:', error);
     res.status(500).json({ message: "Failed to like post", error: error.message });
+  }
+};
+
+/**
+ * @route   POST /api/posts/:id/comment
+ * @desc    Add a comment to a post
+ * @access  Private
+ */
+export const addComment = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { message } = req.body;
+    // authMiddleware sets req.user.userId
+    const userId = req.user?.userId;
+
+    if (!userId) {
+      return res.status(401).json({ message: "User not authenticated" });
+    }
+
+    // Find the post
+    const post = await Post.findById(id);
+    if (!post) {
+      return res.status(404).json({ message: "Post not found" });
+    }
+
+    // Get user info
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Create comment
+    const comment = {
+      message: message,
+      from: userId.toString(),
+      profile_name: user.username || user.name,
+      profile_image_url: user.picture || 'https://via.placeholder.com/150',
+      likes: [], // Changed to empty array
+      createdAt: new Date()
+    };
+
+    // Add to post
+    post.comments.push(comment);
+    await post.save();
+
+    res.status(200).json(post);
+  } catch (error) {
+    console.error('Add comment error:', error);
+    res.status(500).json({ message: "Failed to add comment", error: error.message });
+  }
+};
+
+/**
+ * @route   POST /api/posts/:postId/comments/:commentId/like
+ * @desc    Like or unlike a comment
+ * @access  Private
+ */
+export const likeComment = async (req, res) => {
+  try {
+    const { postId, commentId } = req.params;
+    const userId = req.user.userId;
+
+    // Find the post
+    const post = await Post.findById(postId);
+    if (!post) {
+      return res.status(404).json({ message: "Post not found" });
+    }
+
+    // Find the comment
+    const comment = post.comments.id(commentId);
+    if (!comment) {
+      return res.status(404).json({ message: "Comment not found" });
+    }
+
+    // Ensure likes is an array
+    if (!Array.isArray(comment.likes)) {
+      comment.likes = [];
+    }
+
+    // Check if user already liked
+    const userIndex = comment.likes.findIndex(id => id.toString() === userId.toString());
+
+    if (userIndex > -1) {
+      // Unlike: remove user from likes
+      comment.likes.splice(userIndex, 1);
+    } else {
+      // Like: add user to likes
+      comment.likes.push(userId);
+    }
+
+    await post.save();
+    res.status(200).json(post);
+  } catch (error) {
+    console.error('Like comment error:', error);
+    res.status(500).json({ message: "Failed to like comment", error: error.message });
   }
 };

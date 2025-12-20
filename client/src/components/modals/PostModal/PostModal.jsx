@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import './Modal.css'
+import { postAPI } from '../../../services/api';
 
 import MoreHoriz from "@mui/icons-material/MoreHoriz"
 import Close from "@mui/icons-material/Close"
@@ -10,9 +11,10 @@ import Send from "@mui/icons-material/Send";
 import BookMark from "@mui/icons-material/BookMark";
 import StarRate from "@mui/icons-material/StarRate";
 import ArrowBackIos from "@mui/icons-material/ArrowBackIos";
-import ArrowForwardIos from "@mui/icons-material/ArrowForwardIos"; 
+import ArrowForwardIos from "@mui/icons-material/ArrowForwardIos";
+import Delete from "@mui/icons-material/Delete"; 
 
-export default function PostModal({ onClose, post, onAddComment, onLikePost, user}) {
+export default function PostModal({ onClose, post, onAddComment, onLikePost, onDeletePost, user}) {
 
 
     const [currentSlide, setCurrentSlide] = useState(0);
@@ -26,6 +28,37 @@ export default function PostModal({ onClose, post, onAddComment, onLikePost, use
     const handleLike = async () => {
         if (onLikePost) {
             await onLikePost(post._id);
+        }
+    };
+
+    // Handle deleting a post
+    const handleDelete = async () => {
+        if (!window.confirm('Are you sure you want to delete this post?')) {
+            return;
+        }
+        
+        try {
+            await postAPI.deletePost(post._id);
+            if (onDeletePost) {
+                onDeletePost(post._id);
+            }
+            onClose();
+        } catch (error) {
+            console.error('Error deleting post:', error);
+            alert('Failed to delete post');
+        }
+    };
+
+    // Handle liking a comment
+    const handleLikeComment = async (commentId) => {
+        try {
+            const response = await postAPI.likeComment(post._id, commentId);
+            // The response contains the updated post with updated comments
+            // You'll need to update the post in the parent component
+            // For now, we can force a page refresh or update local state
+            window.location.reload(); // Temporary - will improve later
+        } catch (error) {
+            console.error('Error liking comment:', error);
         }
     };
 
@@ -88,8 +121,9 @@ export default function PostModal({ onClose, post, onAddComment, onLikePost, use
         };
 
         // Call parent function to update the post
-        if (onAddComment) {
-            onAddComment(post.id, comment);
+        const postId = post._id || post.id;
+        if (onAddComment && postId) {
+            onAddComment(postId, comment);
         }
 
         // Clear the input
@@ -206,6 +240,9 @@ export default function PostModal({ onClose, post, onAddComment, onLikePost, use
                         <div className="modal-username">{post.username}</div>
                         <div className="follow-btn">Follow</div>
                         <div className="spacer"></div>
+                        {user?.userId === post.user && (
+                            <Delete className="hoverable" onClick={handleDelete} style={{ cursor: 'pointer' }} />
+                        )}
                         <MoreHoriz/>
                     </div>
                     {/* Comments section with original post caption */}
@@ -221,7 +258,12 @@ export default function PostModal({ onClose, post, onAddComment, onLikePost, use
                         </div>
                         {/* Render existing comments */}
                         {post.comments?.map((comment, index) => (
-                            <CommentItem key={index} comment={comment} />
+                            <CommentItem 
+                                key={index} 
+                                comment={comment} 
+                                onLikeComment={handleLikeComment}
+                                currentUserId={user?.userId}
+                            />
                         ))}
                     </div>
                     {/* Like and action buttons */}

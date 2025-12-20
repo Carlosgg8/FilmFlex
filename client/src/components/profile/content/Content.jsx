@@ -1,9 +1,10 @@
 import React, { useEffect,useState } from "react";
 import './Content.css';
 import { selectPost } from "../../../utils/postHandlers"; 
-import NoPost from "./NoPost";
+import { postAPI } from "../../../services/api.js";
 
 import ProfilePost from "../posts/ProfilePost";
+import NoPost from "./NoPost";
 
 /**
  * Component that displays a user's posts in a grid layout
@@ -11,50 +12,50 @@ import ProfilePost from "../posts/ProfilePost";
 export default function Content({ userId, handleSelectPost, onPostCountChange, posts: parentPosts, onPostsLoaded }) {
   const [posts, setPosts] = useState([]);
 
-  useEffect(() => {
+  // Fetch posts for the specific user
+  const fetchPosts = async () => {
     if (!userId) {
       return; // Don't fetch if userId is undefined
     }
     
-    // Fetch posts for the specific user
-    const fetchPosts = async () => {
-      try {
-        const response = await fetch(`/api/posts/user/${userId}`, {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("jwt")}`,
-          },
-        });
-        
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        
-        const data = await response.json();
-        // Ensure data is always an array
-        const postsArray = Array.isArray(data) ? data : [];
-        setPosts(postsArray);
-        
-        // Send posts to parent component
-        if (onPostsLoaded) {
-          onPostsLoaded(postsArray);
-        }
-        
-        // Update parent component with post count
-        onPostCountChange(postsArray.length);
-      } catch (error) {
-        console.error("Failed to fetch posts:", error);
-        setPosts([]);
-        onPostCountChange(0);
-        
-        // Still notify parent even if fetch fails
-        if (onPostsLoaded) {
-          onPostsLoaded([]);
-        }
+    try {
+      const response = await postAPI.getPostsByUser(userId);
+      const postsArray = Array.isArray(response.data) ? response.data : [];
+      setPosts(postsArray);
+      
+      // Send posts to parent component
+      if (onPostsLoaded) {
+        onPostsLoaded(postsArray);
       }
+      
+      // Update parent component with post count
+      onPostCountChange(postsArray.length);
+    } catch (error) {
+      console.error("Failed to fetch posts:", error);
+      setPosts([]);
+      onPostCountChange(0);
+      
+      // Still notify parent even if fetch fails
+      if (onPostsLoaded) {
+        onPostsLoaded([]);
+      }
+    }
+  };
+
+  // Fetch posts when component mounts or userId changes
+  useEffect(() => {
+    fetchPosts();
+  }, [userId]); // Only re-fetch when userId changes
+
+  // Listen for new post creation event
+  useEffect(() => {
+    const handlePostCreated = () => {
+      fetchPosts(); // Refetch posts when new post is created
     };
     
-    fetchPosts();
-  }, [userId, onPostCountChange, onPostsLoaded]);
+    window.addEventListener('postCreated', handlePostCreated);
+    return () => window.removeEventListener('postCreated', handlePostCreated);
+  }, [userId]); // Re-register listener when userId changes
 
   // Use parent posts if available (for comment updates), otherwise use local posts
   const displayPosts = parentPosts && parentPosts.length > 0 ? parentPosts : posts;

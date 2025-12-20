@@ -7,7 +7,9 @@ import {
   getEntriesByUserId,    
   updateEntry,
   deleteEntry,
-  likeEntry
+  likeEntry,
+  addComment,
+  likeComment
 } from "../controllers/postController.js"; 
  import authenticateJWT from "../middleware/authMiddleware.js";
 
@@ -21,5 +23,7 @@ const router = express.Router();
   router.put("/:id", authenticateJWT, updateEntry);
   router.delete("/:id", authenticateJWT, deleteEntry);
   router.post("/:id/like", authenticateJWT, likeEntry);
+  router.post("/:id/comment", authenticateJWT, addComment);
+  router.post("/:postId/comments/:commentId/like", authenticateJWT, likeComment);
 
 export default router;

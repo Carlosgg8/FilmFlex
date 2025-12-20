@@ -55,7 +55,11 @@ const postSchema = new mongoose.Schema(
         from: String, // Fixed: matches test data field name
         profile_name: String,
         profile_image_url: String,
-        likes: { type: Number, default: 0 }
+        likes: [{ // Changed to array to track who liked
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "User"
+        }],
+        createdAt: Date
       }
     ]
   },

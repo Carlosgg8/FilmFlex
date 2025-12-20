@@ -49,61 +49,23 @@ function ProfilePage() {
         setPostCount(count);
     };
 
-    const handleAddComment = (postId, newComment) => {
-        setPosts(prevPosts => 
-        prevPosts.map(post => {
-            if (post.id === postId) {
-                const updatedPost = {
-                    ...post,
-                    comments: [...(post.comments || []), newComment]  
-                };
-                    // selectedPost if it's the same post
-                    if (selectedPost && selectedPost.id === postId) {
-                        setSelectedPost(updatedPost);
-                    }
-                    return updatedPost;
-                }
-                return post;
-            })
-        );
-    };
-
-    // Handle liking a post
-    const handleLikePost = async (postId) => {
+    const handleAddComment = async (postId, newComment) => {
         // Check if this is a test post (id is a number, not ObjectId)
         const isTestPost = typeof postId === 'number' || (typeof postId === 'string' && /^\d+$/.test(postId));
         
         if (isTestPost) {
-            // Handle test post likes locally (no API call)
+            // Handle test post comments locally (no API call)
             setPosts(prevPosts => 
                 prevPosts.map(post => {
                     if ((post._id || post.id) === postId) {
-                        const currentLikes = Array.isArray(post.likes) ? post.likes : [];
-                        const userId = user?.userId;
-                        
-                        // Check if user already liked
-                        const userIndex = currentLikes.findIndex(id => id.toString() === userId?.toString());
-                        let newLikes;
-                        
-                        if (userIndex > -1) {
-                            // Unlike: remove user from likes
-                            newLikes = [...currentLikes];
-                            newLikes.splice(userIndex, 1);
-                        } else {
-                            // Like: add user to likes
-                            newLikes = [...currentLikes, userId];
-                        }
-                        
                         const updatedPost = {
                             ...post,
-                            likes: newLikes
+                            comments: [...(post.comments || []), newComment]  
                         };
-                        
                         // Update selectedPost if it's the same post
                         if (selectedPost && (selectedPost._id || selectedPost.id) === postId) {
                             setSelectedPost(updatedPost);
                         }
-                        
                         return updatedPost;
                     }
                     return post;
@@ -113,6 +75,29 @@ function ProfilePage() {
         }
 
         // Handle real posts with API call
+        try {
+            const response = await postAPI.addComment(postId, { message: newComment.message });
+            const updatedPost = response.data;
+            
+            setPosts(prevPosts => 
+                prevPosts.map(post => {
+                    if (post._id === postId) {
+                        // Update selectedPost if it's the same post
+                        if (selectedPost && selectedPost._id === postId) {
+                            setSelectedPost(updatedPost);
+                        }
+                        return updatedPost;
+                    }
+                    return post;
+                })
+            );
+        } catch (err) {
+            console.error('Error adding comment:', err);
+        }
+    };
+
+    // Handle liking a post
+    const handleLikePost = async (postId) => {
         try {
             const response = await postAPI.likePost(postId);
             const updatedLikes = response.data.likes;
@@ -136,6 +121,11 @@ function ProfilePage() {
         } catch (err) {
             console.error('Error liking post:', err);
         }
+    };
+
+    // Handle deleting a post
+    const handleDeletePost = (postId) => {
+        setPosts(prevPosts => prevPosts.filter(post => post._id !== postId));
     };
 
     // Handle posts being loaded from Content component
@@ -167,6 +157,7 @@ function ProfilePage() {
             onClose={handleCloseModal} 
             onAddComment={handleAddComment}
             onLikePost={handleLikePost}
+            onDeletePost={handleDeletePost}
             user={user} // Pass the logged-in user
         />}
     </>

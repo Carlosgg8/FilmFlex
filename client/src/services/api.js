@@ -60,6 +60,12 @@ export const postAPI = {
   // Like/unlike a post
   likePost: (postId) => api.post(`/api/posts/${postId}/like`),
   
+  // Add a comment to a post
+  addComment: (postId, commentData) => api.post(`/api/posts/${postId}/comment`, commentData),
+  
+  // Like/unlike a comment
+  likeComment: (postId, commentId) => api.post(`/api/posts/${postId}/comments/${commentId}/like`),
+  
   // Create a new post
   createPost: (postData) => api.post('/api/posts', postData),
   
