@@ -16,18 +16,31 @@ import Delete from "@mui/icons-material/Delete";
 
 export default function PostModal({ onClose, post, onAddComment, onLikePost, onDeletePost, user}) {
 
-
     const [currentSlide, setCurrentSlide] = useState(0);
     const [newComment, setNewComment] = useState("");
+    const [localPost, setLocalPost] = useState(post); // Local copy that updates immediately
+
+    // Sync with parent when post prop changes
+    useEffect(() => {
+        setLocalPost(post);
+    }, [post]);
 
     // Check if current user has liked this post
-    const isLiked = Array.isArray(post.likes) ? post.likes.some(id => id.toString() === user?.userId?.toString()) : false;
-    const likesCount = Array.isArray(post.likes) ? post.likes.length : (typeof post.likes === 'number' ? post.likes : 0);
+    const isLiked = Array.isArray(localPost.likes) ? localPost.likes.some(id => id.toString() === user?.userId?.toString()) : false;
+    const likesCount = Array.isArray(localPost.likes) ? localPost.likes.length : (typeof localPost.likes === 'number' ? localPost.likes : 0);
 
     // Handle liking/unliking a post
     const handleLike = async () => {
+        // Optimistic update - update UI immediately
+        const updatedLikes = isLiked 
+            ? localPost.likes.filter(id => id.toString() !== user?.userId?.toString())
+            : [...localPost.likes, user?.userId];
+        
+        setLocalPost({ ...localPost, likes: updatedLikes });
+
+        // Then call API
         if (onLikePost) {
-            await onLikePost(post._id);
+            await onLikePost(localPost._id);
         }
     };
 
@@ -52,11 +65,22 @@ export default function PostModal({ onClose, post, onAddComment, onLikePost, onD
     // Handle liking a comment
     const handleLikeComment = async (commentId) => {
         try {
-            const response = await postAPI.likeComment(post._id, commentId);
-            // The response contains the updated post with updated comments
-            // You'll need to update the post in the parent component
-            // For now, we can force a page refresh or update local state
-            window.location.reload(); // Temporary - will improve later
+            // Optimistic update
+            const updatedComments = localPost.comments.map(c => {
+                if (c._id === commentId) {
+                    const isLiked = Array.isArray(c.likes) && c.likes.some(id => id.toString() === user?.userId?.toString());
+                    const newLikes = isLiked
+                        ? c.likes.filter(id => id.toString() !== user?.userId?.toString())
+                        : [...(c.likes || []), user?.userId];
+                    return { ...c, likes: newLikes };
+                }
+                return c;
+            });
+            
+            setLocalPost({ ...localPost, comments: updatedComments });
+            
+            // API call
+            await postAPI.likeComment(localPost._id, commentId);
         } catch (error) {
             console.error('Error liking comment:', error);
         }
@@ -64,11 +88,11 @@ export default function PostModal({ onClose, post, onAddComment, onLikePost, onD
 
     // Create slides array based on available content
     const slides = [
-        post?.poster && { type: 'poster', content: post.poster, title: 'Movie Poster' },
-        post?.reactionIMG && { type: 'reaction', content: post.reactionIMG, title: 'Reaction' },
-        post?.rating && { type: 'rating', content: post.rating, title: 'Rating' },
+        localPost?.poster && { type: 'poster', content: localPost.poster, title: 'Movie Poster' },
+        localPost?.reactionIMG && { type: 'reaction', content: localPost.reactionIMG, title: 'Reaction' },
+        localPost?.rating && { type: 'rating', content: localPost.rating, title: 'Rating' },
         // Fallback to original imageURL if none of the above exist
-        !post?.poster && !post?.reactionIMG && post?.imageURL && { type: 'image', content: post.imageURL, title: 'Image' }
+        !localPost?.poster && !localPost?.reactionIMG && localPost?.imageURL && { type: 'image', content: localPost.imageURL, title: 'Image' }
     ].filter(Boolean);
 
     // Helper to get scrollbar width
@@ -121,7 +145,7 @@ export default function PostModal({ onClose, post, onAddComment, onLikePost, onD
         };
 
         // Call parent function to update the post
-        const postId = post._id || post.id;
+        const postId = localPost._id || localPost.id;
         if (onAddComment && postId) {
             onAddComment(postId, comment);
         }
@@ -236,11 +260,11 @@ export default function PostModal({ onClose, post, onAddComment, onLikePost, onD
                 <div className="modal-content-section">
                     {/* User info header */}
                     <div className="modal-top-section modal-section">
-                        <img className="profile-image hoverable" src={post.user_profile_image_url}/>
-                        <div className="modal-username">{post.username}</div>
+                        <img className="profile-image hoverable" src={localPost.user_profile_image_url}/>
+                        <div className="modal-username">{localPost.username}</div>
                         <div className="follow-btn">Follow</div>
                         <div className="spacer"></div>
-                        {user?.userId === post.user && (
+                        {user?.userId === localPost.user && (
                             <Delete className="hoverable" onClick={handleDelete} style={{ cursor: 'pointer' }} />
                         )}
                         <MoreHoriz/>
@@ -248,19 +272,19 @@ export default function PostModal({ onClose, post, onAddComment, onLikePost, onD
                     {/* Comments section with original post caption */}
                     <div className="modal-comment-section modal-section">
                         <div className="comment-container">
-                            <img className="profile-image hoverable" src={post.user_profile_image_url}/>
+                            <img className="profile-image hoverable" src={localPost.user_profile_image_url}/>
                             <div>
                                 <div>
-                                    <span className="modal-username hoverable">{post.username}</span>
-                                    <span className="post-caption">{post.caption}</span>
+                                    <span className="modal-username hoverable">{localPost.username}</span>
+                                    <span className="post-caption">{localPost.caption}</span>
                                 </div>
                             </div>
                         </div>
                         {/* Render existing comments */}
-                        {post.comments?.map((comment, index) => (
+                        {localPost.comments?.map((comment, index) => (
                             <CommentItem 
                                 key={index} 
-                                comment={comment} 
+                                comment={comment}
                                 onLikeComment={handleLikeComment}
                                 currentUserId={user?.userId}
                             />

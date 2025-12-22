@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect, useContext } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import SearchIcon from "../assets/loupe.png";
 import message from "../assets/navbar-assets/message-circle.png"
 import profile from "../assets/navbar-assets/user-round-pen.png"
@@ -13,6 +13,7 @@ import {
   useGoProfile,
 } from "../utils/navActions"
 import { AuthContext} from "../context/authContext";
+import { userAPI } from "../services/api";
 
 /**
  * Main navigation bar component with logo, search, and action buttons
@@ -74,19 +75,98 @@ const NavBar = () => {
  * Search bar component with clickable wrapper for better UX
  */
 const SearchBar = () => {
-  const inputRef = useRef(null); 
+  const inputRef = useRef(null);
+  const navigate = useNavigate();
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchResults, setSearchResults] = useState([]);
+  const [showResults, setShowResults] = useState(false);
+  const searchRef = useRef(null);
+
+  // Search users as you type
+  useEffect(() => {
+    const searchUsers = async () => {
+      if (searchQuery.trim().length === 0) {
+        setSearchResults([]);
+        setShowResults(false);
+        return;
+      }
+
+      try {
+        const response = await userAPI.searchUsers(searchQuery);
+        setSearchResults(response.data);
+        setShowResults(true);
+      } catch (error) {
+        console.error('Search error:', error);
+      }
+    };
+
+    const debounceTimer = setTimeout(searchUsers, 300);
+    return () => clearTimeout(debounceTimer);
+  }, [searchQuery]);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (searchRef.current && !searchRef.current.contains(event.target)) {
+        setShowResults(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  const handleUserClick = (userId) => {
+    navigate(`/profile/${userId}`);
+    setSearchQuery("");
+    setShowResults(false);
+  };
+
   return (
-    <div
-      className="search-wrapper"
-      onClick={() => inputRef.current && inputRef.current.focus()} 
-    >
-      <img src={SearchIcon} alt="search" className="search-icon" />
-      <input
-        type="text"
-        placeholder="Search"
-        className="search-input"
-        ref={inputRef}
-      />
+    <div className="search-wrapper" ref={searchRef}>
+      <div
+        className="search-input-wrapper"
+        onClick={() => inputRef.current && inputRef.current.focus()}
+      >
+        <img src={SearchIcon} alt="search" className="search-icon" />
+        <input
+          type="text"
+          placeholder="Search users..."
+          className="search-input"
+          ref={inputRef}
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+        />
+      </div>
+      
+      {/* Search results dropdown */}
+      {showResults && searchResults.length > 0 && (
+        <div className="search-results-dropdown">
+          {searchResults.map((user) => (
+            <div
+              key={user._id}
+              className="search-result-item hoverable"
+              onClick={() => handleUserClick(user._id)}
+            >
+              <img
+                src={user.picture || 'https://via.placeholder.com/40'}
+                alt={user.username}
+                className="search-result-avatar"
+              />
+              <div className="search-result-info">
+                <div className="search-result-username">{user.username}</div>
+                <div className="search-result-name">{user.name}</div>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+      
+      {showResults && searchQuery.trim().length > 0 && searchResults.length === 0 && (
+        <div className="search-results-dropdown">
+          <div className="search-no-results">No users found</div>
+        </div>
+      )}
     </div>
   );
 };

@@ -75,4 +75,14 @@ export const postAPI = {
   // Delete a post
   deletePost: (postId) => api.delete(`/api/posts/${postId}`)
 };
+
+// API functions for users
+export const userAPI = {
+  // Search users
+  searchUsers: (query) => api.get(`/api/users/search?q=${encodeURIComponent(query)}`),
+  
+  // Get user by ID
+  getUserById: (userId) => api.get(`/api/users/${userId}`)
+};
+
  export default api;

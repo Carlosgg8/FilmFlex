@@ -245,13 +245,11 @@ export const likeComment = async (req, res) => {
     const { postId, commentId } = req.params;
     const userId = req.user.userId;
 
-    // Find the post
     const post = await Post.findById(postId);
     if (!post) {
       return res.status(404).json({ message: "Post not found" });
     }
 
-    // Find the comment
     const comment = post.comments.id(commentId);
     if (!comment) {
       return res.status(404).json({ message: "Comment not found" });
@@ -262,14 +260,11 @@ export const likeComment = async (req, res) => {
       comment.likes = [];
     }
 
-    // Check if user already liked
+    // Toggle like
     const userIndex = comment.likes.findIndex(id => id.toString() === userId.toString());
-
     if (userIndex > -1) {
-      // Unlike: remove user from likes
       comment.likes.splice(userIndex, 1);
     } else {
-      // Like: add user to likes
       comment.likes.push(userId);
     }
 
