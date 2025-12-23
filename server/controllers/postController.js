@@ -245,6 +245,7 @@ export const likeComment = async (req, res) => {
     const { postId, commentId } = req.params;
     const userId = req.user.userId;
 
+    // First, check if user already liked this comment
     const post = await Post.findById(postId);
     if (!post) {
       return res.status(404).json({ message: "Post not found" });
@@ -255,21 +256,27 @@ export const likeComment = async (req, res) => {
       return res.status(404).json({ message: "Comment not found" });
     }
 
-    // Ensure likes is an array
-    if (!Array.isArray(comment.likes)) {
-      comment.likes = [];
-    }
+    const hasLiked = comment.likes && comment.likes.some(id => id.toString() === userId.toString());
 
-    // Toggle like
-    const userIndex = comment.likes.findIndex(id => id.toString() === userId.toString());
-    if (userIndex > -1) {
-      comment.likes.splice(userIndex, 1);
+    // Use atomic operation to avoid version conflicts
+    let updatedPost;
+    if (hasLiked) {
+      // Unlike: remove userId from likes array
+      updatedPost = await Post.findOneAndUpdate(
+        { _id: postId, 'comments._id': commentId },
+        { $pull: { 'comments.$.likes': userId } },
+        { new: true }
+      );
     } else {
-      comment.likes.push(userId);
+      // Like: add userId to likes array
+      updatedPost = await Post.findOneAndUpdate(
+        { _id: postId, 'comments._id': commentId },
+        { $addToSet: { 'comments.$.likes': userId } },
+        { new: true }
+      );
     }
 
-    await post.save();
-    res.status(200).json(post);
+    res.status(200).json(updatedPost);
   } catch (error) {
     console.error('Like comment error:', error);
     res.status(500).json({ message: "Failed to like comment", error: error.message });

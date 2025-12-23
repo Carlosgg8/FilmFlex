@@ -15,7 +15,7 @@ import { AuthContext } from "../context/authContext";
 function PostCard({post, onCommentClick, onLikePost}) {
   return (
     <div className="post-card">
-      <Header profileImage={post.user_profile_image_url || post.profileImage} user={post.user} />
+      <Header profileImage={post.user_profile_image_url || post.profileImage} username={post.username} />
       <PhotoCarousel post={post} />
       <Caption text={post.caption} />
       <ActionBar onCommentClick={() => onCommentClick(post)} onLikePost={() => onLikePost(post._id || post.id)} post={post} />
@@ -26,13 +26,13 @@ function PostCard({post, onCommentClick, onLikePost}) {
 /**
  * Header component showing user profile info and menu options
  */
-const Header = ({ profileImage, user }) => {
+const Header = ({ profileImage, username }) => {
   return(
     <div className="bar">
       {/* User profile section */}
       <div className="bar-left">
-        <img src={profileImage} alt={`${user}'s profile`} className="profile-image" />
-        <div className="profile-name">{user}</div>
+        <img src={profileImage} alt={`${username}'s profile`} className="profile-image" />
+        <div className="profile-name">{username}</div>
       </div>
       {/* Menu options */}
       <div className="bar-right">

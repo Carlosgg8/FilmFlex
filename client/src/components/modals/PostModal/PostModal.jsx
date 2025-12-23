@@ -4,7 +4,7 @@ import { postAPI } from '../../../services/api';
 
 import MoreHoriz from "@mui/icons-material/MoreHoriz"
 import Close from "@mui/icons-material/Close"
-import CommentItem from "../../comment/comment";
+//import CommentItem from "../../comment/comment";
 import Favorite from "@mui/icons-material/Favorite";
 import ModeComment from "@mui/icons-material/ModeComment";
 import Send from "@mui/icons-material/Send";

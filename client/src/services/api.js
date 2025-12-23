@@ -82,7 +82,10 @@ export const userAPI = {
   searchUsers: (query) => api.get(`/api/users/search?q=${encodeURIComponent(query)}`),
   
   // Get user by ID
-  getUserById: (userId) => api.get(`/api/users/${userId}`)
+  getUserById: (userId) => api.get(`/api/users/${userId}`),
+
+  // Follow user
+  followUser: (userId) => api.post(`/api/users/${userId}/follow`)
 };
 
  export default api;

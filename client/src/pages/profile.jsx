@@ -8,7 +8,7 @@ import Content from "../components/profile/content/Content";
 import PostModal from '../components/modals/PostModal/PostModal.jsx'
 import ProfileHeader from "../components/profile/ProfileHeader/ProfileHeader";
 import NavBar from "../components/NavBar.jsx";
-import { postAPI } from "../services/api.js";
+import { postAPI, userAPI } from "../services/api.js";
 
 import '../components/profile/content//Content.css'
 
@@ -19,11 +19,33 @@ function ProfilePage() {
     const { userId } = useParams();  
     const { user } = useContext(AuthContext);
 
+    const [profileUser, setProfileUser] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedPost, setSelectedPost] = useState(null);
     const [searchValue, setSearchValue] = useState("");
     const [postCount, setPostCount] = useState(0); 
     const [posts, setPosts] = useState([]);
+    
+    // Fetch profile user data when userId changes
+    useEffect(() => {
+        const fetchProfileUser = async () => {
+            try {
+                // If no userId in URL, viewing own profile
+                if (!userId) {
+                    setProfileUser(user);
+                    return;
+                }
+                
+                // Fetch the profile user's data
+                const response = await userAPI.getUserById(userId);
+                setProfileUser(response.data);
+            } catch (err) {
+                console.error('Error fetching profile user:', err);
+            }
+        };
+
+        fetchProfileUser();
+    }, [userId, user]);
     
     // Handle post selection and modal opening
     const handleSelectPost = (post) => {
@@ -138,10 +160,14 @@ function ProfilePage() {
         <NavBar />
         {/* Main profile page container */}
         <div className="profile-page-container"> 
-            <ProfileHeader 
-                user={user} 
-                postCount={postCount} 
-            />
+            {profileUser && (
+                <ProfileHeader 
+                    user={profileUser} 
+                    postCount={postCount}
+                    isOwnProfile={!userId || user?.userId === profileUser?._id}
+                    loggedInUser={user}
+                />
+            )}
             {/* Content area displaying user's posts */}
             <Content 
                 userId={userId || user?.id || user?.userId} 

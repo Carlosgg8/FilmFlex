@@ -48,3 +48,40 @@ export const getUserById = async (req, res) => {
     res.status(500).json({ message: "Failed to get user", error: error.message });
   }
 };
+
+export const toggleFollow = async (req, res) => {
+  try {
+    const { userId } = req.params; // Target user to follow/unfollow
+    const currentUserId = req.user.userId; // Logged in user
+
+    if (currentUserId === userId) {
+      return res.status(400).json({ message: "You cannot follow yourself" });
+    }
+
+    // Check if already following
+    const currentUser = await User.findById(currentUserId);
+    const isFollowing = currentUser.following.includes(userId);
+
+    if (isFollowing) {
+      // Unfollow: remove from both arrays
+      await User.findByIdAndUpdate(currentUserId, { $pull: { following: userId } });
+      await User.findByIdAndUpdate(userId, { $pull: { followers: currentUserId } });
+    } else {
+      // Follow: add to both arrays
+      await User.findByIdAndUpdate(currentUserId, { $addToSet: { following: userId } });
+      await User.findByIdAndUpdate(userId, { $addToSet: { followers: currentUserId } });
+    }
+
+    // Get updated counts
+    const updatedTargetUser = await User.findById(userId).select('followers following');
+    
+    res.status(200).json({
+      isFollowing: !isFollowing,
+      followerCount: updatedTargetUser.followers.length,
+      followingCount: updatedTargetUser.following.length
+    });
+  } catch (error) {
+    console.error('Toggle follow error:', error);
+    res.status(500).json({ message: "Failed to toggle follow", error: error.message });
+  }
+};
