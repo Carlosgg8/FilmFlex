@@ -42,6 +42,27 @@ const postSchema = new mongoose.Schema(
       required: true
     },
 
+    // TMDB movie data
+    movieTitle: {
+      type: String,
+      required: false
+    },
+
+    tmdbId: {
+      type: Number,
+      required: false
+    },
+
+    posterUrl: {
+      type: String,
+      required: false
+    },
+
+    releaseYear: {
+      type: String,
+      required: false
+    },
+
     // Likes as array of user IDs
     likes: [{
       type: mongoose.Schema.Types.ObjectId,

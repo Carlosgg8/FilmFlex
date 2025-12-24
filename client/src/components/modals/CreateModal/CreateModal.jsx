@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import './CreateModal.css';
 import Close from "@mui/icons-material/Close";
 import StarRate from "@mui/icons-material/StarRate";
+import { tmdbAPI } from '../../../services/api';
 
 
 /**
@@ -13,8 +14,18 @@ export default function CreateModal({ onClose }) {
         poster: null,
         reactionIMG: null,
         rating: 0,
-        caption: ''
+        caption: '',
+        movieTitle: '',
+        tmdbId: null,
+        posterUrl: '',
+        releaseYear: ''
     });
+    
+    // TMDB search state
+    const [searchQuery, setSearchQuery] = useState('');
+    const [searchResults, setSearchResults] = useState([]);
+    const [showDropdown, setShowDropdown] = useState(false);
+    const [selectedMovie, setSelectedMovie] = useState(null);
 
     // Helper to get scrollbar width
     function getScrollbarWidth() {
@@ -32,6 +43,38 @@ export default function CreateModal({ onClose }) {
             document.body.style.paddingRight = "";
         };
     }, []);
+
+    // Debounced TMDB search
+    useEffect(() => {
+        if (!searchQuery.trim()) {
+            setSearchResults([]);
+            setShowDropdown(false);
+            return;
+        }
+
+        const timer = setTimeout(async () => {
+            try {
+                const response = await tmdbAPI.searchMovies(searchQuery);
+                console.log('TMDB API Response:', response.data);
+                console.log('First movie result:', response.data.results?.[0]);
+                setSearchResults(response.data.results || []);
+                setShowDropdown(true);
+            } catch (err) {
+                console.error('Error searching movies:', err);
+            }
+        }, 300);
+
+        return () => clearTimeout(timer);
+    }, [searchQuery]);
+
+    // Close dropdown when clicking outside
+    useEffect(() => {
+        const handleClickOutside = () => setShowDropdown(false);
+        if (showDropdown) {
+            document.addEventListener('click', handleClickOutside);
+            return () => document.removeEventListener('click', handleClickOutside);
+        }
+    }, [showDropdown]);
 
     /**
      * Compress image to reduce file size before uploading
@@ -77,6 +120,31 @@ export default function CreateModal({ onClose }) {
         // Compress image before storing
         const compressedImage = await compressImage(file);
         setFormData(prev => ({ ...prev, [type]: compressedImage }));
+    };
+
+    // Handle movie selection from search results
+    const handleMovieSelect = (movie) => {
+        const posterUrl = movie.poster_path 
+            ? `https://image.tmdb.org/t/p/w500${movie.poster_path}`
+            : null;
+        
+        const releaseYear = movie.release_date 
+            ? new Date(movie.release_date).getFullYear().toString()
+            : '';
+
+        setSelectedMovie(movie);
+        setFormData(prev => ({
+            ...prev,
+            movieTitle: movie.title,
+            tmdbId: movie.id,
+            posterUrl: posterUrl,
+            releaseYear: releaseYear,
+            poster: posterUrl // Auto-fill poster image
+        }));
+        
+        setSearchQuery('');
+        setSearchResults([]);
+        setShowDropdown(false);
     };
 
     const handlePost = async () => {
@@ -201,6 +269,54 @@ export default function CreateModal({ onClose }) {
                     </div>
                     
                     <div className="modal-comment-section modal-section">
+                        {/* Movie Search */}
+                        <div className="movie-search-section">
+                            <h3>Search Movie</h3>
+                            <div className="search-container" onClick={(e) => e.stopPropagation()}>
+                                <input
+                                    type="text"
+                                    placeholder="Search for a movie..."
+                                    value={searchQuery}
+                                    onChange={(e) => setSearchQuery(e.target.value)}
+                                    className="movie-search-input"
+                                />
+                                
+                                {/* Search Results Dropdown */}
+                                {showDropdown && searchResults.length > 0 && (
+                                    <div className="search-dropdown">
+                                        {searchResults.slice(0, 5).map((movie) => (
+                                            <div 
+                                                key={movie.id}
+                                                className="search-result-item"
+                                                onClick={() => handleMovieSelect(movie)}
+                                            >
+                                                {movie.poster_path && (
+                                                    <img 
+                                                        src={`https://image.tmdb.org/t/p/w92${movie.poster_path}`}
+                                                        alt={movie.title}
+                                                        className="result-poster"
+                                                    />
+                                                )}
+                                                <div className="result-info">
+                                                    <div className="result-title">{movie.title}</div>
+                                                    <div className="result-year">
+                                                        {movie.release_date ? new Date(movie.release_date).getFullYear() : 'N/A'}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
+                            
+                            {/* Display selected movie */}
+                            {selectedMovie && (
+                                <div className="selected-movie">
+                                    <strong>Selected:</strong> {formData.movieTitle} ({formData.releaseYear})
+                                </div>
+                            )}
+                        </div>
+
                         <div className="rating-section">
                             <h3>Your Rating</h3>
                             <div className="stars">
@@ -226,7 +342,7 @@ export default function CreateModal({ onClose }) {
                     <div className="modal-detail-section modal-section">
                         <button 
                             onClick={handlePost}
-                            disabled={!formData.poster || !formData.reactionIMG || !formData.caption}  
+                            disabled={!formData.poster || !formData.reactionIMG || !formData.caption || !formData.movieTitle}  
                             className="post-button"
                         >
                             Post Review

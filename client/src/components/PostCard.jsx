@@ -51,10 +51,10 @@ const PhotoCarousel = ({ post }) => {
   // Create slides array based on available content
   const slides = [
     post?.poster && { type: 'poster', content: post.poster, title: 'Movie Poster' },
-    post?.reactionImg && { type: 'reaction', content: post.reactionImg, title: 'Reaction' },
+    post?.reactionIMG && { type: 'reaction', content: post.reactionIMG, title: 'Reaction' },
     post?.rating && { type: 'rating', content: post.rating, title: 'Rating' },
     // Fallback to original photoSrc or imageURL if none of the above exist
-    !post?.poster && !post?.reactionImg && (post?.photoSrc || post?.imageURL) && { 
+    !post?.poster && !post?.reactionIMG && (post?.photoSrc || post?.imageURL) && { 
       type: 'image', 
       content: post.photoSrc || post.imageURL, 
       title: 'Photo' 

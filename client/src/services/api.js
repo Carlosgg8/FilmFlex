@@ -88,4 +88,17 @@ export const userAPI = {
   followUser: (userId) => api.post(`/api/users/${userId}/follow`)
 };
 
- export default api;
+// API functions for TMDB
+export const tmdbAPI = {
+  searchMovies: (query) => {
+    const apiKey = import.meta.env.VITE_TMDB_API_KEY;
+    return axios.get(`https://api.themoviedb.org/3/search/movie`, {
+      params: {
+        api_key: apiKey,
+        query: query
+      }
+    });
+  }
+};
+
+export default api;
