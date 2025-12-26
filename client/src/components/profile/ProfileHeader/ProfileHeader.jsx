@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { userAPI } from "../../../services/api";
+import EditProfileModal from "../../modals/editProfileModal/editProfileModal";
 import './ProfileHeader.css';
 
 /**
@@ -9,6 +10,13 @@ export default function ProfileHeader( { user = {}, postCount = 0, isOwnProfile 
     const [isFollowing, setIsFollowing] = useState(false);
     const [followerCount, setFollowerCount] = useState(0);
     const [followingCount, setFollowingCount] = useState(0);
+    const [showEditModal, setShowEditModal] = useState(false);
+    const [localUser, setLocalUser] = useState(user);
+
+    // Update local user when prop changes
+    useEffect(() => {
+        setLocalUser(user);
+    }, [user]);
 
     // Check if logged-in user is following this profile
     useEffect(() => {
@@ -53,23 +61,35 @@ export default function ProfileHeader( { user = {}, postCount = 0, isOwnProfile 
         return followsYou ? "Follow Back" : "Follow";
     };
 
+    // Handle profile update from edit modal
+    const handleProfileUpdate = (updatedUser) => {
+        setLocalUser(updatedUser);
+    };
+
     return(
-        
+        <>
             <div className="header-container">
                 {/* Left side - Profile picture */}
                 <div className="header-left">
                     <img className="profile-photo" 
-                        src={user.picture || "https://via.placeholder.com/150/0000FF/FFFFFF?text=No+Pic"} 
-                        alt={user.name || "User"} 
+                        src={localUser.picture || "https://via.placeholder.com/150/0000FF/FFFFFF?text=No+Pic"} 
+                        alt={localUser.name || "User"} 
                     />
                 </div>
 
                 {/* Right side - User info and stats */}
                 <div className="header-right">
-                    {/* Username and follow button */}
+                    {/* Username and edit/follow button */}
                     <div className="user-info">
                         <h2 className="username">{user.username} </h2>
-                        {!isOwnProfile && (
+                        {isOwnProfile ? (
+                            <button 
+                                className="edit-profile-btn"
+                                onClick={() => setShowEditModal(true)}
+                            >
+                                Edit Profile
+                            </button>
+                        ) : (
                             <button 
                                 className={`follow-btn ${isFollowing ? 'following' : ''}`}
                                 onClick={handleFollowClick}
@@ -88,24 +108,33 @@ export default function ProfileHeader( { user = {}, postCount = 0, isOwnProfile 
                     
                     {/* Bio and additional user details */}
                     <div className="user-description">
-                        <strong className="display-name">{user.name || 'Display Name'}</strong>
-                        {user.bio && <p>{user.bio}</p>}
-                        {user.location && <p>📍 {user.location}</p>}
+                        <strong className="display-name">{localUser.name || 'Display Name'}</strong>
+                        {localUser.bio && <p>{localUser.bio}</p>}
+                        {localUser.location && <p>📍 {localUser.location}</p>}
                         {/* Website link */}
-                        {user.website && (
+                        {localUser.website && (
                             <a 
-                                href={user.website} 
+                                href={localUser.website} 
                                 className="profile-link"
                                 target="_blank" 
                                 rel="noopener noreferrer"
                             >
-                                {user.website.replace(/(^\w+:|^)\/\//, '')}
+                                {localUser.website.replace(/(^\w+:|^)\/\//, '')}
                             </a>
                         )}
 
                     </div>
                 </div>
             </div>
-       
+
+            {/* Edit Profile Modal */}
+            {showEditModal && (
+                <EditProfileModal 
+                    onClose={() => setShowEditModal(false)}
+                    currentUser={localUser}
+                    onProfileUpdate={handleProfileUpdate}
+                />
+            )}
+        </>
     );
 }

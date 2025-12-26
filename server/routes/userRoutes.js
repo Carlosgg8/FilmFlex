@@ -1,5 +1,5 @@
 import express from "express";
-import { searchUsers, getUserById } from "../controllers/userController.js";
+import { searchUsers, getUserById, updateProfile } from "../controllers/userController.js";
 import authenticateJWT from "../middleware/authMiddleware.js";
 import { toggleFollow } from "../controllers/userController.js";
 
@@ -13,5 +13,8 @@ router.get("/:userId", authenticateJWT, getUserById);
 
 // Follow user
 router.post("/:userId/follow", authenticateJWT, toggleFollow);
+
+// Edit profile
+router.put("/profile", authenticateJWT, updateProfile)
 
 export default router;

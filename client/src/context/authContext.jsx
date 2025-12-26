@@ -87,6 +87,25 @@ logout function
     setUser(null);
     window.location.href = '/login';
   };
+
+  /**
+   * updateUser function
+   * Updates the current user data in both state and localStorage
+   * 
+   * @param {object} updatedUserData - Updated user information
+   */
+  const updateUser = (updatedUserData) => {
+    // Map _id to userId if it exists (backend returns _id, we store userId)
+    const normalizedData = { ...updatedUserData };
+    if (normalizedData._id && !normalizedData.userId) {
+      normalizedData.userId = normalizedData._id;
+    }
+    
+    const updatedUser = { ...user, ...normalizedData };
+    localStorage.setItem("user", JSON.stringify(updatedUser));
+    setUser(updatedUser);
+  };
+
   /**
    * 
 Context value object:
@@ -109,6 +128,7 @@ A double negation (!!) forces a boolean
     token,
     login,
     logout,
+    updateUser,
     isAuthenticated: !!token // Converts truthy token into boolean true
   };
   return (

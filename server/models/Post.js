@@ -73,7 +73,12 @@ const postSchema = new mongoose.Schema(
     comments: [
       {
         message: String, // Fixed: matches test data field name
-        from: String, // Fixed: matches test data field name
+        user: { // Changed from 'from' to 'user' with proper ObjectId ref
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "User",
+          required: true
+        },
+        // Keep these for backward compatibility with existing comments
         profile_name: String,
         profile_image_url: String,
         likes: [{ // Changed to array to track who liked

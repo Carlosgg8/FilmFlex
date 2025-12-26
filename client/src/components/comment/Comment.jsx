@@ -20,12 +20,21 @@ export default function CommentItem({comment, onLikeComment, currentUserId}){
     
     const likesCount = Array.isArray(comment.likes) ? comment.likes.length : 0;
 
+    // Debug: Log comment structure
+    console.log('Comment data:', comment);
+    console.log('Comment.user:', comment.user);
+    console.log('Comment.user?.picture:', comment.user?.picture);
+
+    // Use populated user data if available, fall back to legacy fields for old comments
+    const profileImage = comment.user?.picture || comment.profile_image_url || 'https://via.placeholder.com/150';
+    const profileName = comment.user?.username || comment.profile_name || 'Anonymous';
+
     return(
         <div className="comment-container">
-                <img className="profile-image hoverable" src={comment.profile_image_url}/>
+                <img className="profile-image hoverable" src={profileImage}/>
                 <div>
                     <div>
-                        <span className="modal-username hoverable">{comment.profile_name}</span>
+                        <span className="modal-username hoverable">{profileName}</span>
                         <span className="">{comment.message}</span>
                     </div>
                     <div className="comment-details ">

@@ -20,6 +20,10 @@ export default function PostModal({ onClose, post, onAddComment, onLikePost, onD
     const [newComment, setNewComment] = useState("");
     const [localPost, setLocalPost] = useState(post); // Local copy that updates immediately
 
+    // Debug: Log user data when component renders
+    console.log('PostModal user prop:', user);
+    console.log('User picture:', user?.picture);
+
     // Sync with parent when post prop changes
     useEffect(() => {
         setLocalPost(post);
@@ -136,12 +140,15 @@ export default function PostModal({ onClose, post, onAddComment, onLikePost, onD
         // Don't add empty comments
         if (!newComment.trim()) return;
 
-        // Create new comment object
+        // Create new comment object matching backend structure with populated user data
         const comment = {
             message: newComment.trim(),
-            profile_name: user?.username || user?.name || "Anonymous", // Use actual logged-in user
-            profile_image_url: user?.profileImage || user?.user_profile_image_url || "https://randomuser.me/api/portraits/women/4.jpg", // Use actual user image
-            likes: 0
+            user: {
+                _id: user?.userId,
+                username: user?.username || user?.name || "Anonymous",
+                picture: user?.picture || "https://via.placeholder.com/150"
+            },
+            likes: []
         };
 
         // Call parent function to update the post

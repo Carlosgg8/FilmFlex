@@ -85,7 +85,10 @@ export const userAPI = {
   getUserById: (userId) => api.get(`/api/users/${userId}`),
 
   // Follow user
-  followUser: (userId) => api.post(`/api/users/${userId}/follow`)
+  followUser: (userId) => api.post(`/api/users/${userId}/follow`),
+
+  // Update profile
+  updateProfile: (profileData) => api.put('/api/users/profile', profileData)
 };
 
 // API functions for TMDB

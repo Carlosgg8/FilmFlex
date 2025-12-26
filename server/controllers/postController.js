@@ -10,7 +10,9 @@ import User from '../models/User.js';
  */
 export const getAllEntries = async (req, res) => {
   try {
-    const entries = await Post.find().sort({ createdAt: -1 });
+    const entries = await Post.find()
+      .populate('comments.user', 'username picture') // Populate user data for each comment
+      .sort({ createdAt: -1 });
     res.status(200).json(entries);
   } catch (error) {
     res.status(500).json({ message: "Server Error: Unable to fetch posts" });
@@ -24,7 +26,8 @@ export const getAllEntries = async (req, res) => {
  */
 export const getEntryById = async (req, res) => {
   try {
-    const entry = await Post.findById(req.params.id);
+    const entry = await Post.findById(req.params.id)
+      .populate('comments.user', 'username picture'); // Populate user data for each comment
     if (!entry) {
       return res.status(404).json({ message: "Post not found" });
     }
@@ -139,7 +142,9 @@ export const deleteEntry = async (req, res) => {
 export const getEntriesByUserId = async (req, res) => {
   try {
     const { userId } = req.params;
-    const entries = await Post.find({ user: userId }).sort({ createdAt: -1 });
+    const entries = await Post.find({ user: userId })
+      .populate('comments.user', 'username picture') // Populate user data for each comment
+      .sort({ createdAt: -1 });
     res.status(200).json(entries);
   } catch (error) {
     res.status(500).json({ message: "Failed to fetch user posts", error });
@@ -214,13 +219,11 @@ export const addComment = async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    // Create comment
+    // Create comment with user reference only (not static profile data)
     const comment = {
       message: message,
-      from: userId.toString(),
-      profile_name: user.username || user.name,
-      profile_image_url: user.picture || 'https://via.placeholder.com/150',
-      likes: [], // Changed to empty array
+      user: userId, // Store ObjectId reference instead of string
+      likes: [],
       createdAt: new Date()
     };
 
@@ -228,7 +231,11 @@ export const addComment = async (req, res) => {
     post.comments.push(comment);
     await post.save();
 
-    res.status(200).json(post);
+    // Populate user data for all comments before sending response
+    const populatedPost = await Post.findById(post._id)
+      .populate('comments.user', 'username picture');
+
+    res.status(200).json(populatedPost);
   } catch (error) {
     console.error('Add comment error:', error);
     res.status(500).json({ message: "Failed to add comment", error: error.message });
@@ -266,14 +273,14 @@ export const likeComment = async (req, res) => {
         { _id: postId, 'comments._id': commentId },
         { $pull: { 'comments.$.likes': userId } },
         { new: true }
-      );
+      ).populate('comments.user', 'username picture');
     } else {
       // Like: add userId to likes array
       updatedPost = await Post.findOneAndUpdate(
         { _id: postId, 'comments._id': commentId },
         { $addToSet: { 'comments.$.likes': userId } },
         { new: true }
-      );
+      ).populate('comments.user', 'username picture');
     }
 
     res.status(200).json(updatedPost);
