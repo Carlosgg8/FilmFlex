@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useContext } from "react";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import FavoriteBorder from "@mui/icons-material/FavoriteBorder";
 import Favorite from "@mui/icons-material/Favorite";
+import { AuthContext } from "../../context/authContext";
 
 import './Comment.css'
 
@@ -14,6 +15,8 @@ dayjs.extend(relativeTime);
  * Renders a single comment with user profile image, username, message, and like count
  */
 export default function CommentItem({comment, onLikeComment, currentUserId}){
+    const { user } = useContext(AuthContext);
+    
     const isLiked = Array.isArray(comment.likes) 
         ? comment.likes.some(id => id.toString() === currentUserId?.toString())
         : false;
@@ -25,8 +28,17 @@ export default function CommentItem({comment, onLikeComment, currentUserId}){
     console.log('Comment.user:', comment.user);
     console.log('Comment.user?.picture:', comment.user?.picture);
 
-    // Use populated user data if available, fall back to legacy fields for old comments
-    const profileImage = comment.user?.picture || comment.profile_image_url || 'https://via.placeholder.com/150';
+    // Get the comment author's ID (handle both ObjectId objects and strings)
+    const commentUserId = comment.user?._id || comment.user;
+    
+    // Check if this comment is from the current logged-in user
+    const isCurrentUser = commentUserId?.toString() === user?.userId?.toString();
+    
+    // Use current user's live picture if this is their comment, otherwise use populated/cached data
+    const profileImage = isCurrentUser 
+        ? (user?.picture || 'https://via.placeholder.com/150')
+        : (comment.user?.picture || comment.profile_image_url || 'https://via.placeholder.com/150');
+    
     const profileName = comment.user?.username || comment.profile_name || 'Anonymous';
 
     return(

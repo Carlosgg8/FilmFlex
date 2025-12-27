@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import './Modal.css'
 import { postAPI } from '../../../services/api';
+import { AuthContext } from '../../../context/authContext';
 
 import MoreHoriz from "@mui/icons-material/MoreHoriz"
 import Close from "@mui/icons-material/Close"
@@ -15,7 +16,8 @@ import ArrowForwardIos from "@mui/icons-material/ArrowForwardIos";
 import Delete from "@mui/icons-material/Delete"; 
 
 export default function PostModal({ onClose, post, onAddComment, onLikePost, onDeletePost, user}) {
-
+    const { user: authUser } = useContext(AuthContext);
+    
     const [currentSlide, setCurrentSlide] = useState(0);
     const [newComment, setNewComment] = useState("");
     const [localPost, setLocalPost] = useState(post); // Local copy that updates immediately
@@ -28,6 +30,12 @@ export default function PostModal({ onClose, post, onAddComment, onLikePost, onD
     useEffect(() => {
         setLocalPost(post);
     }, [post]);
+    
+    // Determine if this post is from the current user and use live profile picture if so
+    const isCurrentUserPost = localPost.user?.toString() === authUser?.userId?.toString();
+    const postAuthorPicture = isCurrentUserPost 
+        ? (authUser?.picture || localPost.user_profile_image_url) 
+        : localPost.user_profile_image_url;
 
     // Check if current user has liked this post
     const isLiked = Array.isArray(localPost.likes) ? localPost.likes.some(id => id.toString() === user?.userId?.toString()) : false;
@@ -267,7 +275,7 @@ export default function PostModal({ onClose, post, onAddComment, onLikePost, onD
                 <div className="modal-content-section">
                     {/* User info header */}
                     <div className="modal-top-section modal-section">
-                        <img className="profile-image hoverable" src={localPost.user_profile_image_url}/>
+                        <img className="profile-image hoverable" src={postAuthorPicture}/>
                         <div className="modal-username">{localPost.username}</div>
                         <div className="follow-btn">Follow</div>
                         <div className="spacer"></div>
@@ -279,7 +287,7 @@ export default function PostModal({ onClose, post, onAddComment, onLikePost, onD
                     {/* Comments section with original post caption */}
                     <div className="modal-comment-section modal-section">
                         <div className="comment-container">
-                            <img className="profile-image hoverable" src={localPost.user_profile_image_url}/>
+                            <img className="profile-image hoverable" src={postAuthorPicture}/>
                             <div>
                                 <div>
                                     <span className="modal-username hoverable">{localPost.username}</span>

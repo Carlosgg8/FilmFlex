@@ -1,6 +1,7 @@
 import Post from "../models/Post.js";
 
 import User from '../models/User.js'; 
+import { createNotification } from './notificationController.js'; 
 
 
 /**
@@ -181,6 +182,20 @@ export const likeEntry = async (req, res) => {
     } else {
       // User hasn't liked, add like
       post.likes.push(userId);
+      
+      // Create notification for post owner (if not liking own post)
+      try {
+        await createNotification({
+          recipient: post.user,
+          sender: userId,
+          type: 'like',
+          post: post._id,
+          message: 'liked your post'
+        });
+      } catch (notifError) {
+        console.error('Failed to create notification:', notifError);
+        // Don't fail the like operation if notification fails
+      }
     }
 
     await post.save();
@@ -217,7 +232,21 @@ export const addComment = async (req, res) => {
     const user = await User.findById(userId);
     if (!user) {
       return res.status(404).json({ message: "User not found" });
+    } // Create notification for post owner (if not commenting on own post)
+    try {
+      await createNotification({
+        recipient: post.user,
+        sender: userId,
+        type: 'comment',
+        post: post._id,
+        message: 'commented on your post'
+      });
+    } catch (notifError) {
+      console.error('Failed to create notification:', notifError);
+      // Don't fail the comment operation if notification fails
     }
+
+    // 
 
     // Create comment with user reference only (not static profile data)
     const comment = {

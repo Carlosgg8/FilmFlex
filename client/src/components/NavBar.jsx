@@ -13,7 +13,7 @@ import {
   useGoProfile,
 } from "../utils/navActions"
 import { AuthContext} from "../context/authContext";
-import { userAPI } from "../services/api";
+import { userAPI, notificationAPI } from "../services/api";
 
 /**
  * Main navigation bar component with logo, search, and action buttons
@@ -21,7 +21,31 @@ import { userAPI } from "../services/api";
 const NavBar = () => {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showNotificationModal, setShowNotificationModal] = useState(false);
+  const [unreadCount, setUnreadCount] = useState(0);
   const { user, logout } = useContext(AuthContext); // get user from context
+
+  // Fetch unread notification count on mount and periodically
+  useEffect(() => {
+    const fetchUnreadCount = async () => {
+      try {
+        const response = await notificationAPI.getUnreadCount();
+        setUnreadCount(response.data.count);
+      } catch (error) {
+        console.error('Failed to fetch unread count:', error);
+      }
+    };
+
+    fetchUnreadCount();
+    const interval = setInterval(fetchUnreadCount, 30000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const handleCloseNotificationModal = () => {
+    setShowNotificationModal(false);
+    notificationAPI.getUnreadCount()
+      .then(response => setUnreadCount(response.data.count))
+      .catch(error => console.error('Failed to fetch unread count:', error));
+  };
 
   // Lock scroll when any modal is open
   useEffect(() => {
@@ -54,6 +78,7 @@ const NavBar = () => {
             onShowNotificationModal={() => setShowNotificationModal(true)}
             onLogout={handleLogout}  
             userId={user && user.userId}
+            unreadCount={unreadCount}
           />
         </div>
       </div>
@@ -65,7 +90,7 @@ const NavBar = () => {
         />
       )}
       {showNotificationModal && (
-        <NotificationModal onClose={() => setShowNotificationModal(false)} />
+        <NotificationModal onClose={handleCloseNotificationModal} />
       )}
     </div>
   );
@@ -174,7 +199,7 @@ const SearchBar = () => {
 /**
  * Action buttons section for navigation (messages, notifications, create, profile)
  */
-const ActionSection = ({ onShowCreateModal, onShowNotificationModal, onLogout, userId }) => {
+const ActionSection = ({ onShowCreateModal, onShowNotificationModal, onLogout, userId, unreadCount }) => {
   const goMessage = useGoMessage();
   const goProfile = useGoProfile(userId);
 
@@ -184,9 +209,14 @@ const ActionSection = ({ onShowCreateModal, onShowNotificationModal, onLogout, u
       <div onClick={goMessage} className="messages">
         <img src={message} alt="message" className="messages" />
       </div>
-      {/* Notifications modal trigger */}
-      <div onClick={onShowNotificationModal} className="notifications">
+      {/* Notifications modal trigger with badge */}
+      <div onClick={onShowNotificationModal} className="notifications" style={{ position: 'relative' }}>
         <img src={bell} alt="notification" className="notifications" />
+        {unreadCount > 0 && (
+          <span className="notification-badge">
+            {unreadCount > 99 ? '99+' : unreadCount}
+          </span>
+        )}
       </div>
       {/* Create post modal trigger */}
       <div onClick={onShowCreateModal} className="create-post">

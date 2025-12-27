@@ -13,9 +13,17 @@ import { AuthContext } from "../context/authContext";
  * Main post card component for feed display with carousel functionality
  */
 function PostCard({post, onCommentClick, onLikePost}) {
+  const { user } = useContext(AuthContext);
+  
+  // Use current user's live picture if this is their post
+  const isCurrentUserPost = post.user?.toString() === user?.userId?.toString();
+  const postAuthorPicture = isCurrentUserPost 
+    ? (user?.picture || post.user_profile_image_url || post.profileImage)
+    : (post.user_profile_image_url || post.profileImage);
+  
   return (
     <div className="post-card">
-      <Header profileImage={post.user_profile_image_url || post.profileImage} username={post.username} />
+      <Header profileImage={postAuthorPicture} username={post.username} />
       <PhotoCarousel post={post} />
       <Caption text={post.caption} />
       <ActionBar onCommentClick={() => onCommentClick(post)} onLikePost={() => onLikePost(post._id || post.id)} post={post} />

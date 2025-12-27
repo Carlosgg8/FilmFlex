@@ -91,6 +91,24 @@ export const userAPI = {
   updateProfile: (profileData) => api.put('/api/users/profile', profileData)
 };
 
+// API functions for notifications
+export const notificationAPI = {
+  // Get all notifications for current user
+  getNotifications: () => api.get('/api/notifications'),
+  
+  // Get unread notification count
+  getUnreadCount: () => api.get('/api/notifications/unread-count'),
+  
+  // Mark single notification as read
+  markAsRead: (notificationId) => api.put(`/api/notifications/${notificationId}/read`),
+  
+  // Mark all notifications as read
+  markAllAsRead: () => api.put('/api/notifications/mark-all-read'),
+  
+  // Delete a notification
+  deleteNotification: (notificationId) => api.delete(`/api/notifications/${notificationId}`)
+};
+
 // API functions for TMDB
 export const tmdbAPI = {
   searchMovies: (query) => {

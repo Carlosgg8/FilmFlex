@@ -1,6 +1,6 @@
 import mongoose from "mongoose"; 
 
-// Define schema for movie review posts
+// schema for movie review posts
 const postSchema = new mongoose.Schema(
   {
     user: {

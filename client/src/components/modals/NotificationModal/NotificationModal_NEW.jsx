@@ -38,6 +38,7 @@ export default function NotificationModal({ onClose }) {
 
     // Handle clicking a notification
     const handleNotificationClick = async (notification) => {
+        // Mark as read
         if (!notification.read) {
             try {
                 await notificationAPI.markAsRead(notification._id);
@@ -49,6 +50,7 @@ export default function NotificationModal({ onClose }) {
             }
         }
 
+        // Navigate based on notification type
         if (notification.post) {
             onClose();
         } else if (notification.type === 'follow') {
@@ -105,12 +107,10 @@ export default function NotificationModal({ onClose }) {
     }
 
     useEffect(() => {
-        // On mount: lock scroll and add padding
         const scrollbarWidth = getScrollbarWidth();
         document.body.style.overflow = "hidden";
         document.body.style.paddingRight = scrollbarWidth + "px";
         return () => {
-            // On unmount: restore scroll and remove padding
             document.body.style.overflow = "";
             document.body.style.paddingRight = "";
         };

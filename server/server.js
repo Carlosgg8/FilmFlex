@@ -12,6 +12,7 @@ import connectDB from "./config/db.js";
 import postRoutes from "./routes/postRoutes.js";
 import authRoutes from "./routes/authRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
+import notificationRoutes from "./routes/notificationRoutes.js";
 
 dotenv.config(); // Load environment variables
 
@@ -29,6 +30,7 @@ app.use('/uploads', express.static('uploads')); // Serve uploaded files
 app.use("/api/posts", postRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
+app.use("/api/notifications", notificationRoutes);
 
 // Test route
 app.get("/", (req, res) => {
