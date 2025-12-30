@@ -11,6 +11,11 @@ const userSchema = new mongoose.Schema(
       return !this.googleId; // Required only if not Google user
     }},
 
+    savedPosts: [{
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Post"
+    }],
+
     // New Fields for Profile Page
     username: { type: String, unique: true, sparse: true }, // can be user-generated later
     bio: { type: String, maxlength: 150 },

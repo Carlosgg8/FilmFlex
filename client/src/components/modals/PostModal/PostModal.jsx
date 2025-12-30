@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useContext } from "react";
 import './Modal.css'
-import { postAPI } from '../../../services/api';
+import { postAPI, userAPI } from '../../../services/api';
+import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../../context/authContext';
 
 import MoreHoriz from "@mui/icons-material/MoreHoriz"
@@ -17,10 +18,13 @@ import Delete from "@mui/icons-material/Delete";
 
 export default function PostModal({ onClose, post, onAddComment, onLikePost, onDeletePost, user}) {
     const { user: authUser } = useContext(AuthContext);
+
+    const navigate = useNavigate();
     
     const [currentSlide, setCurrentSlide] = useState(0);
     const [newComment, setNewComment] = useState("");
     const [localPost, setLocalPost] = useState(post); // Local copy that updates immediately
+    const [isSaved, setIsSaved] = useState(false);
 
     // Debug: Log user data when component renders
     console.log('PostModal user prop:', user);
@@ -40,6 +44,37 @@ export default function PostModal({ onClose, post, onAddComment, onLikePost, onD
     // Check if current user has liked this post
     const isLiked = Array.isArray(localPost.likes) ? localPost.likes.some(id => id.toString() === user?.userId?.toString()) : false;
     const likesCount = Array.isArray(localPost.likes) ? localPost.likes.length : (typeof localPost.likes === 'number' ? localPost.likes : 0);
+
+    // Check if post is saved on mount
+    useEffect(() => {
+        const checkIfSaved = async () => {
+            try {
+                const response = await userAPI.getSavedPosts();
+                const saved = response.data.some(p => p._id === localPost._id);
+                setIsSaved(saved);
+            } catch (error) {
+                console.error('Error checking saved status:', error);
+            }
+        };
+        if (authUser?.userId) {
+            checkIfSaved();
+        }
+    }, [localPost._id, authUser?.userId]);
+
+    // Handle bookmarking/unbookmarking a post
+    const handleBookmark = async () => {
+        try {
+            // Optimistic update
+            setIsSaved(!isSaved);
+            
+            // API call
+            await userAPI.toggleSavePost(localPost._id);
+        } catch (error) {
+            console.error('Error toggling bookmark:', error);
+            // Revert on error
+            setIsSaved(!isSaved);
+        }
+    };
 
     // Handle liking/unliking a post
     const handleLike = async () => {
@@ -74,10 +109,16 @@ export default function PostModal({ onClose, post, onAddComment, onLikePost, onD
         }
     };
 
+    const handleProfileClick = () => {
+        const profileUserId = localPost.user;
+        navigate(`/profile/${profileUserId}`);
+        onClose(); // Close the modal before navigating
+    };
+
     // Handle liking a comment
     const handleLikeComment = async (commentId) => {
         try {
-            // Optimistic update
+            
             const updatedComments = localPost.comments.map(c => {
                 if (c._id === commentId) {
                     const isLiked = Array.isArray(c.likes) && c.likes.some(id => id.toString() === user?.userId?.toString());
@@ -311,12 +352,19 @@ export default function PostModal({ onClose, post, onAddComment, onLikePost, onD
                             <Favorite 
                                 className={`hoverable ${isLiked ? 'liked' : ''}`}
                                 onClick={handleLike}
-                                style={{ color: isLiked ? '#e91e63' : 'inherit' }}
+                                style={{ color: isLiked ? '#e91e63' : 'inherit', cursor: 'pointer' }}
                             />
                             <ModeComment className="hoverable"/>
                             <Send className="hoverable"/>
                             <div className="spacer"></div>
-                            <BookMark className="hoverable"/>
+                            <BookMark 
+                                className="hoverable"
+                                onClick={handleBookmark}
+                                style={{ 
+                                    color: isSaved ? '#FFD700' : '#000',
+                                    cursor: 'pointer'
+                                }}
+                            />
                         </div>
                         <span>{likesCount} Likes</span>
                     </div>

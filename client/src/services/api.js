@@ -88,7 +88,11 @@ export const userAPI = {
   followUser: (userId) => api.post(`/api/users/${userId}/follow`),
 
   // Update profile
-  updateProfile: (profileData) => api.put('/api/users/profile', profileData)
+  updateProfile: (profileData) => api.put('/api/users/profile', profileData),
+
+  // Bookmark posts
+  toggleSavePost: (postId) => api.post(`/api/users/saved/${postId}`),
+  getSavedPosts: () => api.get('/api/users/saved')
 };
 
 // API functions for notifications

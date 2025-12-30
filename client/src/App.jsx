@@ -9,6 +9,7 @@ import ProfilePage from "./pages/profile.jsx";
 import CreatePost from "./pages/createPost.jsx";
 import UsernameSetup from "./components/login/Username/UsernameSetup.jsx";
 import Signup from "./pages/Signup.jsx";
+import SavedPosts from "./pages/SavedPosts.jsx";
 
 //import Dashboard from "./pages/Feed";
 import './App.css';;
@@ -79,6 +80,10 @@ function App() {
         <Route 
           path="/create-post" 
           element={isAuthenticated ? <CreatePost /> : <Navigate to="/login" replace />}
+        />
+        <Route 
+          path="/saved" 
+          element={isAuthenticated ? <SavedPosts /> : <Navigate to="/login" replace />}
         />
       </Routes>
     </div>

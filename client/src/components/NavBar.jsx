@@ -1,10 +1,10 @@
 import React, { useRef, useState, useEffect, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import SearchIcon from "../assets/loupe.png";
-import message from "../assets/navbar-assets/message-circle.png"
 import profile from "../assets/navbar-assets/user-round-pen.png"
 import bell from "../assets/navbar-assets/bell.png"
 import create from "../assets/navbar-assets/circle-plus.png"
+import BookmarkBorder from "@mui/icons-material/BookmarkBorder"
 import CreatModal from "./modals/CreateModal/CreateModal";
 import NotificationModal from "./modals/NotificationModal/NotificationModal";
 import {
@@ -200,14 +200,14 @@ const SearchBar = () => {
  * Action buttons section for navigation (messages, notifications, create, profile)
  */
 const ActionSection = ({ onShowCreateModal, onShowNotificationModal, onLogout, userId, unreadCount }) => {
-  const goMessage = useGoMessage();
+  const navigate = useNavigate();
   const goProfile = useGoProfile(userId);
 
   return (
     <div className="action-section">
-      {/* Messages navigation */}
-      <div onClick={goMessage} className="messages">
-        <img src={message} alt="message" className="messages" />
+      {/* Saved posts navigation */}
+      <div onClick={() => navigate('/saved')} className="saved-posts" style={{ cursor: 'pointer' }}>
+        <BookmarkBorder style={{ fontSize: '28px', color: '#333' }} />
       </div>
       {/* Notifications modal trigger with badge */}
       <div onClick={onShowNotificationModal} className="notifications" style={{ position: 'relative' }}>
