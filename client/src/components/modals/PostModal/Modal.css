@@ -83,6 +83,11 @@
     cursor: pointer;
 }
 
+.follow-btn.following {
+    background-color: #dbdbdb;
+    color: #000;
+}
+
 .spacer{
     flex:1;
 }

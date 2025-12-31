@@ -1,4 +1,5 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import threeDots from "../assets/3dots.png";
 import Favorite from "@mui/icons-material/Favorite";
 import ModeComment from "@mui/icons-material/ModeComment";
@@ -8,6 +9,7 @@ import StarRate from "@mui/icons-material/StarRate";
 import ArrowBackIos from "@mui/icons-material/ArrowBackIos";
 import ArrowForwardIos from "@mui/icons-material/ArrowForwardIos";
 import { AuthContext } from "../context/authContext";
+import { userAPI } from "../services/api";
 
 /**
  * Main post card component for feed display with carousel functionality
@@ -23,7 +25,7 @@ function PostCard({post, onCommentClick, onLikePost}) {
   
   return (
     <div className="post-card">
-      <Header profileImage={postAuthorPicture} username={post.username} />
+      <Header profileImage={postAuthorPicture} username={post.username} userId={post.user} />
       <PhotoCarousel post={post} />
       <Caption text={post.caption} />
       <ActionBar onCommentClick={() => onCommentClick(post)} onLikePost={() => onLikePost(post._id || post.id)} post={post} />
@@ -34,13 +36,94 @@ function PostCard({post, onCommentClick, onLikePost}) {
 /**
  * Header component showing user profile info and menu options
  */
-const Header = ({ profileImage, username }) => {
+const Header = ({ profileImage, username, userId }) => {
+  const navigate = useNavigate();
+  const { user } = useContext(AuthContext);
+  const [isFollowing, setIsFollowing] = useState(false);
+  const [isOwnPost, setIsOwnPost] = useState(false);
+  
+  // Check if this is the current user's post
+  useEffect(() => {
+    if (user?.userId && userId) {
+      setIsOwnPost(user.userId.toString() === userId.toString());
+    }
+  }, [user?.userId, userId]);
+
+  // Check if current user is following this user
+  useEffect(() => {
+    const checkFollowStatus = async () => {
+      try {
+        if (isOwnPost) return;
+        
+        const response = await userAPI.getUserById(userId);
+        const isFollowingUser = response.data.followers?.includes(user?.userId);
+        setIsFollowing(isFollowingUser);
+      } catch (error) {
+        console.error('Error checking follow status:', error);
+      }
+    };
+    
+    if (user?.userId && userId && !isOwnPost) {
+      checkFollowStatus();
+    }
+  }, [userId, user?.userId, isOwnPost]);
+  
+  const handleProfileClick = () => {
+    navigate(`/profile/${userId}`);
+  };
+
+  const handleFollowClick = async (e) => {
+    e.stopPropagation(); // Prevent triggering profile navigation
+    try {
+      // Optimistic update
+      setIsFollowing(!isFollowing);
+
+      // API call
+      await userAPI.followUser(userId);
+    } catch (err) {
+      console.error('Error toggling follow:', err);
+      // Revert on error
+      setIsFollowing(!isFollowing);
+    }
+  };
+  
   return(
     <div className="bar">
       {/* User profile section */}
       <div className="bar-left">
-        <img src={profileImage} alt={`${username}'s profile`} className="profile-image" />
-        <div className="profile-name">{username}</div>
+        <img 
+          src={profileImage} 
+          alt={`${username}'s profile`} 
+          className="profile-image" 
+          onClick={handleProfileClick}
+          style={{ cursor: 'pointer' }}
+        />
+        <div 
+          className="profile-name"
+          onClick={handleProfileClick}
+          style={{ cursor: 'pointer' }}
+        >
+          {username}
+        </div>
+        {!isOwnPost && (
+          <button 
+            className={`follow-btn-card ${isFollowing ? 'following' : ''}`}
+            onClick={handleFollowClick}
+            style={{ 
+              marginLeft: '10px',
+              padding: '5px 15px',
+              border: 'none',
+              borderRadius: '4px',
+              cursor: 'pointer',
+              fontSize: '14px',
+              fontWeight: '600',
+              backgroundColor: isFollowing ? '#dbdbdb' : '#0095f6',
+              color: isFollowing ? '#000' : '#fff'
+            }}
+          >
+            {isFollowing ? 'Following' : 'Follow'}
+          </button>
+        )}
       </div>
       {/* Menu options */}
       <div className="bar-right">
@@ -173,13 +256,44 @@ const PhotoCarousel = ({ post }) => {
  */
 const ActionBar = ( {onCommentClick, onLikePost, post} ) => {
   const { user } = useContext(AuthContext);
+  const [isSaved, setIsSaved] = useState(false);
   
   // Check if current user has liked this post
   const isLiked = Array.isArray(post.likes) ? post.likes.some(id => id.toString() === user?.userId?.toString()) : false;
   
+  // Check if post is saved on mount
+  useEffect(() => {
+    const checkIfSaved = async () => {
+      try {
+        const response = await userAPI.getSavedPosts();
+        const saved = response.data.some(p => p._id === post._id);
+        setIsSaved(saved);
+      } catch (error) {
+        console.error('Error checking saved status:', error);
+      }
+    };
+    if (user?.userId && post._id) {
+      checkIfSaved();
+    }
+  }, [post._id, user?.userId]);
+  
   const handleLike = () => {
     if (onLikePost) {
       onLikePost();
+    }
+  };
+
+  const handleBookmark = async () => {
+    try {
+      // Optimistic update
+      setIsSaved(!isSaved);
+      
+      // API call
+      await userAPI.toggleSavePost(post._id);
+    } catch (error) {
+      console.error('Error toggling bookmark:', error);
+      // Revert on error
+      setIsSaved(!isSaved);
     }
   };
 
@@ -198,7 +312,15 @@ const ActionBar = ( {onCommentClick, onLikePost, post} ) => {
       </div>
       {/* Right side actions */}
       <div className="bar-right">
-        <BookMark alt="bookmark" className="action-icon-right"/>
+        <BookMark 
+          alt="bookmark" 
+          className="action-icon-right"
+          onClick={handleBookmark}
+          style={{ 
+            color: isSaved ? '#FFD700' : '#000',
+            cursor: 'pointer'
+          }}
+        />
       </div>
     </div>
   )

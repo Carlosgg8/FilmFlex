@@ -25,6 +25,7 @@ export default function PostModal({ onClose, post, onAddComment, onLikePost, onD
     const [newComment, setNewComment] = useState("");
     const [localPost, setLocalPost] = useState(post); // Local copy that updates immediately
     const [isSaved, setIsSaved] = useState(false);
+    const [isFollowing, setIsFollowing] = useState(false);
 
     // Debug: Log user data when component renders
     console.log('PostModal user prop:', user);
@@ -60,6 +61,26 @@ export default function PostModal({ onClose, post, onAddComment, onLikePost, onD
             checkIfSaved();
         }
     }, [localPost._id, authUser?.userId]);
+
+    // Check if current user is following the post author
+    useEffect(() => {
+        const checkFollowStatus = async () => {
+            try {
+                // Don't check if viewing own post
+                if (localPost.user?.toString() === authUser?.userId?.toString()) {
+                    return;
+                }
+                const response = await userAPI.getUserById(localPost.user);
+                const isFollowingUser = response.data.followers?.includes(authUser?.userId);
+                setIsFollowing(isFollowingUser);
+            } catch (error) {
+                console.error('Error checking follow status:', error);
+            }
+        };
+        if (authUser?.userId && localPost.user) {
+            checkFollowStatus();
+        }
+    }, [localPost.user, authUser?.userId, post]);
 
     // Handle bookmarking/unbookmarking a post
     const handleBookmark = async () => {
@@ -113,6 +134,21 @@ export default function PostModal({ onClose, post, onAddComment, onLikePost, onD
         const profileUserId = localPost.user;
         navigate(`/profile/${profileUserId}`);
         onClose(); // Close the modal before navigating
+    };
+
+    // Handle follow/unfollow
+    const handleFollowClick = async () => {
+        try {
+            // Optimistic update
+            setIsFollowing(!isFollowing);
+
+            // API call
+            await userAPI.followUser(localPost.user);
+        } catch (err) {
+            console.error('Error toggling follow:', err);
+            // Revert on error
+            setIsFollowing(!isFollowing);
+        }
     };
 
     // Handle liking a comment
@@ -316,9 +352,28 @@ export default function PostModal({ onClose, post, onAddComment, onLikePost, onD
                 <div className="modal-content-section">
                     {/* User info header */}
                     <div className="modal-top-section modal-section">
-                        <img className="profile-image hoverable" src={postAuthorPicture}/>
-                        <div className="modal-username">{localPost.username}</div>
-                        <div className="follow-btn">Follow</div>
+                        <img 
+                            className="profile-image hoverable" 
+                            src={postAuthorPicture}
+                            onClick={handleProfileClick}
+                            style={{ cursor: 'pointer' }}
+                        />
+                        <div 
+                            className="modal-username" 
+                            onClick={handleProfileClick}
+                            style={{ cursor: 'pointer' }}
+                        >
+                            {localPost.username}
+                        </div>
+                        {user?.userId !== localPost.user && (
+                            <div 
+                                className={`follow-btn ${isFollowing ? 'following' : ''}`}
+                                onClick={handleFollowClick}
+                                style={{ cursor: 'pointer' }}
+                            >
+                                {isFollowing ? 'Following' : 'Follow'}
+                            </div>
+                        )}
                         <div className="spacer"></div>
                         {user?.userId === localPost.user && (
                             <Delete className="hoverable" onClick={handleDelete} style={{ cursor: 'pointer' }} />
@@ -328,10 +383,21 @@ export default function PostModal({ onClose, post, onAddComment, onLikePost, onD
                     {/* Comments section with original post caption */}
                     <div className="modal-comment-section modal-section">
                         <div className="comment-container">
-                            <img className="profile-image hoverable" src={postAuthorPicture}/>
+                            <img 
+                                className="profile-image hoverable" 
+                                src={postAuthorPicture}
+                                onClick={handleProfileClick}
+                                style={{ cursor: 'pointer' }}
+                            />
                             <div>
                                 <div>
-                                    <span className="modal-username hoverable">{localPost.username}</span>
+                                    <span 
+                                        className="modal-username hoverable"
+                                        onClick={handleProfileClick}
+                                        style={{ cursor: 'pointer' }}
+                                    >
+                                        {localPost.username}
+                                    </span>
                                     <span className="post-caption">{localPost.caption}</span>
                                 </div>
                             </div>

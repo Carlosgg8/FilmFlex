@@ -10,13 +10,13 @@ import { postAPI } from "../services/api.js";
 /**
  * Component that renders the feed of post cards
  */
-const FeedContent = ({ handleSelectPost, handleLikePost, posts }) => {
+const FeedContent = ({ handleSelectPost, handleLikePost, posts, refreshKey }) => {
   return (
     <div className="feed-content">
       <div className="feed-grid">
         {/* Map through posts to create PostCard components */}
         {posts.map((post) => (
-          <PostCard key={post._id || post.id} post={post} onCommentClick={handleSelectPost} onLikePost={handleLikePost} />
+          <PostCard key={`${post._id || post.id}-${refreshKey}`} post={post} onCommentClick={handleSelectPost} onLikePost={handleLikePost} />
         ))}
       </div> 
     </div>
@@ -32,6 +32,7 @@ function Feed() {
   const [error, setError] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedPost, setSelectedPost] = useState(null);
+  const [refreshKey, setRefreshKey] = useState(0);
   const { user } = useContext(AuthContext);
 
   // Fetch posts on component mount
@@ -62,6 +63,8 @@ function Feed() {
   const handleCloseModal = () => {
     setIsModalOpen(false);
     setSelectedPost(null);
+    // Increment key to force PostCards to refresh follow status
+    setRefreshKey(prev => prev + 1);
   };
 
   // Handle adding comments to posts
@@ -169,7 +172,7 @@ function Feed() {
     <>
       
       <div className="feed-container">
-        <FeedContent handleSelectPost={handleSelectPost} handleLikePost={handleLikePost} posts={posts} />
+        <FeedContent handleSelectPost={handleSelectPost} handleLikePost={handleLikePost} posts={posts} refreshKey={refreshKey} />
       </div>
       {/* Conditionally render post modal */}
       {isModalOpen && (
