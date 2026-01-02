@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { userAPI } from "../../../services/api";
 import EditProfileModal from "../../modals/editProfileModal/editProfileModal";
+import FollowersModal from "../../modals/FollowersModal/FollowersModal";
 import './ProfileHeader.css';
 
 /**
@@ -11,6 +12,8 @@ export default function ProfileHeader( { user = {}, postCount = 0, isOwnProfile 
     const [followerCount, setFollowerCount] = useState(0);
     const [followingCount, setFollowingCount] = useState(0);
     const [showEditModal, setShowEditModal] = useState(false);
+    const [showFollowersModal, setShowFollowersModal] = useState(false);
+    const [followersModalTab, setFollowersModalTab] = useState('followers');
     const [localUser, setLocalUser] = useState(user);
 
     // Update local user when prop changes
@@ -66,6 +69,18 @@ export default function ProfileHeader( { user = {}, postCount = 0, isOwnProfile 
         setLocalUser(updatedUser);
     };
 
+    // Open followers modal
+    const handleShowFollowers = () => {
+        setFollowersModalTab('followers');
+        setShowFollowersModal(true);
+    };
+
+    // Open following modal
+    const handleShowFollowing = () => {
+        setFollowersModalTab('following');
+        setShowFollowersModal(true);
+    };
+
     return(
         <>
             <div className="header-container">
@@ -102,8 +117,18 @@ export default function ProfileHeader( { user = {}, postCount = 0, isOwnProfile 
                     {/* Engagement statistics */}
                     <div className="user-counts">
                         <span><strong>{postCount.toLocaleString()}</strong> posts</span>
-                        <span><strong>{followerCount.toLocaleString()}</strong> followers</span>
-                        <span><strong>{followingCount.toLocaleString()}</strong> following</span>
+                        <span 
+                            onClick={handleShowFollowers}
+                            style={{ cursor: 'pointer' }}
+                        >
+                            <strong>{followerCount.toLocaleString()}</strong> followers
+                        </span>
+                        <span 
+                            onClick={handleShowFollowing}
+                            style={{ cursor: 'pointer' }}
+                        >
+                            <strong>{followingCount.toLocaleString()}</strong> following
+                        </span>
                     </div>
                     
                     {/* Bio and additional user details */}
@@ -133,6 +158,15 @@ export default function ProfileHeader( { user = {}, postCount = 0, isOwnProfile 
                     onClose={() => setShowEditModal(false)}
                     currentUser={localUser}
                     onProfileUpdate={handleProfileUpdate}
+                />
+            )}
+
+            {/* Followers/Following Modal */}
+            {showFollowersModal && (
+                <FollowersModal
+                    onClose={() => setShowFollowersModal(false)}
+                    userId={user._id}
+                    initialTab={followersModalTab}
                 />
             )}
         </>

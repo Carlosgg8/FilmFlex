@@ -26,6 +26,7 @@ export default function PostModal({ onClose, post, onAddComment, onLikePost, onD
     const [localPost, setLocalPost] = useState(post); // Local copy that updates immediately
     const [isSaved, setIsSaved] = useState(false);
     const [isFollowing, setIsFollowing] = useState(false);
+    const [showOptionsMenu, setShowOptionsMenu] = useState(false);
 
     // Debug: Log user data when component renders
     console.log('PostModal user prop:', user);
@@ -35,6 +36,17 @@ export default function PostModal({ onClose, post, onAddComment, onLikePost, onD
     useEffect(() => {
         setLocalPost(post);
     }, [post]);
+
+    // Close options menu when clicking outside
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (showOptionsMenu && !event.target.closest('.options-menu') && !event.target.closest('.MuiSvgIcon-root')) {
+                setShowOptionsMenu(false);
+            }
+        };
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, [showOptionsMenu]);
     
     // Determine if this post is from the current user and use live profile picture if so
     const isCurrentUserPost = localPost.user?.toString() === authUser?.userId?.toString();
@@ -128,6 +140,21 @@ export default function PostModal({ onClose, post, onAddComment, onLikePost, onD
             console.error('Error deleting post:', error);
             alert('Failed to delete post');
         }
+        setShowOptionsMenu(false);
+    };
+
+    // Handle copying post link
+    const handleCopyLink = () => {
+        const postLink = `${window.location.origin}/post/${localPost._id}`;
+        navigator.clipboard.writeText(postLink);
+        alert('Link copied to clipboard!');
+        setShowOptionsMenu(false);
+    };
+
+    // Handle report (placeholder)
+    const handleReport = () => {
+        alert('Report functionality coming soon!');
+        setShowOptionsMenu(false);
     };
 
     const handleProfileClick = () => {
@@ -375,10 +402,44 @@ export default function PostModal({ onClose, post, onAddComment, onLikePost, onD
                             </div>
                         )}
                         <div className="spacer"></div>
-                        {user?.userId === localPost.user && (
-                            <Delete className="hoverable" onClick={handleDelete} style={{ cursor: 'pointer' }} />
-                        )}
-                        <MoreHoriz/>
+                        <div style={{ position: 'relative' }}>
+                            <MoreHoriz 
+                                className="hoverable" 
+                                onClick={() => setShowOptionsMenu(!showOptionsMenu)}
+                                style={{ cursor: 'pointer' }}
+                            />
+                            {showOptionsMenu && (
+                                <div className="options-menu">
+                                    {user?.userId === localPost.user ? (
+                                        <>
+                                            <div className="menu-item" onClick={handleDelete}>
+                                                Delete Post
+                                            </div>
+                                            <div className="menu-item" onClick={handleCopyLink}>
+                                                Copy Link
+                                            </div>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <div className="menu-item" onClick={handleReport}>
+                                                Report
+                                            </div>
+                                            {isFollowing && (
+                                                <div className="menu-item" onClick={handleFollowClick}>
+                                                    Unfollow @{localPost.username}
+                                                </div>
+                                            )}
+                                            <div className="menu-item" onClick={handleCopyLink}>
+                                                Copy Link
+                                            </div>
+                                        </>
+                                    )}
+                                    <div className="menu-item" onClick={() => setShowOptionsMenu(false)}>
+                                        Cancel
+                                    </div>
+                                </div>
+                            )}
+                        </div>
                     </div>
                     {/* Comments section with original post caption */}
                     <div className="modal-comment-section modal-section">

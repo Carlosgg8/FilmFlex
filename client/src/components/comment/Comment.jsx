@@ -1,4 +1,5 @@
 import React, { useContext } from "react";
+import { useNavigate } from "react-router-dom";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import FavoriteBorder from "@mui/icons-material/FavoriteBorder";
@@ -16,6 +17,7 @@ dayjs.extend(relativeTime);
  */
 export default function CommentItem({comment, onLikeComment, currentUserId}){
     const { user } = useContext(AuthContext);
+    const navigate = useNavigate();
     
     const isLiked = Array.isArray(comment.likes) 
         ? comment.likes.some(id => id.toString() === currentUserId?.toString())
@@ -41,12 +43,28 @@ export default function CommentItem({comment, onLikeComment, currentUserId}){
     
     const profileName = comment.user?.username || comment.profile_name || 'Anonymous';
 
+    // Handle profile navigation
+    const handleProfileClick = () => {
+        navigate(`/profile/${commentUserId}`);
+    };
+
     return(
         <div className="comment-container">
-                <img className="profile-image hoverable" src={profileImage}/>
+                <img 
+                    className="profile-image hoverable" 
+                    src={profileImage}
+                    onClick={handleProfileClick}
+                    style={{ cursor: 'pointer' }}
+                />
                 <div>
                     <div>
-                        <span className="modal-username hoverable">{profileName}</span>
+                        <span 
+                            className="modal-username hoverable"
+                            onClick={handleProfileClick}
+                            style={{ cursor: 'pointer' }}
+                        >
+                            {profileName}
+                        </span>
                         <span className="">{comment.message}</span>
                     </div>
                     <div className="comment-details ">

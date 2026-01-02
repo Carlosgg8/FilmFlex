@@ -4,7 +4,7 @@
     left: 0;
     height: 100vh;
     width: 100vw;
-    background-color: rgba(0, 0, 0, 0.35);
+    background-color: rgba(90, 74, 58, 0.35);
     z-index: 1000;
 }
 
@@ -17,13 +17,13 @@
 }
 
 .notification-modal{
-    background-color: white;
+    background-color: #faf9f7;
     max-width: 500px;
     min-height: 60vh;
     max-height: 80vh;
     margin: auto;
     margin-top: 50px;
-    border-radius: 8px;
+    border-radius: 12px;
     display: flex;
     flex-direction: column;
 }
@@ -33,26 +33,27 @@
     justify-content: space-between;
     align-items: center;
     padding: 16px 20px;
-    border-bottom: 1px solid rgb(220, 220, 220);
+    border-bottom: 1px solid #d5cbbc;
 }
 
 .notification-top{
     font-size: 1.5rem;
     font-weight: 600;
+    color: #3a2a1a;
 }
 
 .mark-all-read-btn {
     background: none;
     border: none;
-    color: #2196f3;
+    color: #8a7860;
     font-size: 0.9rem;
     cursor: pointer;
     padding: 4px 8px;
-    transition: opacity 0.2s;
+    transition: color 0.2s;
 }
 
 .mark-all-read-btn:hover {
-    opacity: 0.7;
+    color: #5a4a3a;
 }
 
 .notification-content {
@@ -66,7 +67,7 @@
     justify-content: center;
     align-items: center;
     padding: 40px;
-    color: #888;
+    color: #7a6b5a;
     font-size: 1rem;
 }
 
@@ -80,7 +81,7 @@
     display: flex;
     align-items: center;
     gap: 12px;
-    border-bottom: 1px solid rgb(240, 240, 240);
+    border-bottom: 1px solid #e0d6c8;
     padding: 14px 16px;
     cursor: pointer;
     transition: background-color 0.2s;
@@ -88,15 +89,15 @@
 }
 
 .notification-item:hover {
-    background-color: #f9f9f9;
+    background-color: #f0ebe5;
 }
 
 .notification-item.unread {
-    background-color: #e3f2fd;
+    background-color: #e8dfd5;
 }
 
 .notification-item.unread:hover {
-    background-color: #d1e7fd;
+    background-color: #ddd4ca;
 }
 
 .notification-icon {
@@ -121,12 +122,12 @@
 .notification-item p {
     margin: 0 0 4px 0;
     font-size: 0.95rem;
-    color: #333;
+    color: #5a4a3a;
     line-height: 1.4;
 }
 
 .notification-item strong {
-    color: #000;
+    color: #3a2a1a;
     font-weight: 600;
 }
 
@@ -135,7 +136,7 @@
     background: none;
     border: none;
     font-size: 1.8rem;
-    color: #999;
+    color: #7a6b5a;
     cursor: pointer;
     padding: 0;
     width: 24px;
@@ -147,13 +148,13 @@
 }
 
 .notification-delete:hover {
-    color: #e91e63;
+    color: #8a7860;
 }
 
 .time {
     display: block;
     font-size: 0.8rem;
-    color: #888;
+    color: #7a6b5a;
     margin-top: 2px;
 }
 

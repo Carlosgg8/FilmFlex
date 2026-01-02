@@ -9,12 +9,12 @@ import StarRate from "@mui/icons-material/StarRate";
 import ArrowBackIos from "@mui/icons-material/ArrowBackIos";
 import ArrowForwardIos from "@mui/icons-material/ArrowForwardIos";
 import { AuthContext } from "../context/authContext";
-import { userAPI } from "../services/api";
+import { userAPI, postAPI } from "../services/api";
 
 /**
  * Main post card component for feed display with carousel functionality
  */
-function PostCard({post, onCommentClick, onLikePost}) {
+function PostCard({post, onCommentClick, onLikePost, onDeletePost}) {
   const { user } = useContext(AuthContext);
   
   // Use current user's live picture if this is their post
@@ -25,7 +25,7 @@ function PostCard({post, onCommentClick, onLikePost}) {
   
   return (
     <div className="post-card">
-      <Header profileImage={postAuthorPicture} username={post.username} userId={post.user} />
+      <Header profileImage={postAuthorPicture} username={post.username} userId={post.user} postId={post._id || post.id} onDeletePost={onDeletePost} />
       <PhotoCarousel post={post} />
       <Caption text={post.caption} />
       <ActionBar onCommentClick={() => onCommentClick(post)} onLikePost={() => onLikePost(post._id || post.id)} post={post} />
@@ -36,11 +36,12 @@ function PostCard({post, onCommentClick, onLikePost}) {
 /**
  * Header component showing user profile info and menu options
  */
-const Header = ({ profileImage, username, userId }) => {
+const Header = ({ profileImage, username, userId, postId, onDeletePost }) => {
   const navigate = useNavigate();
   const { user } = useContext(AuthContext);
   const [isFollowing, setIsFollowing] = useState(false);
   const [isOwnPost, setIsOwnPost] = useState(false);
+  const [showOptionsMenu, setShowOptionsMenu] = useState(false);
   
   // Check if this is the current user's post
   useEffect(() => {
@@ -85,6 +86,36 @@ const Header = ({ profileImage, username, userId }) => {
       // Revert on error
       setIsFollowing(!isFollowing);
     }
+    setShowOptionsMenu(false);
+  };
+
+  const handleCopyLink = () => {
+    const postLink = `${window.location.origin}/post/${postId}`;
+    navigator.clipboard.writeText(postLink);
+    alert('Link copied to clipboard!');
+    setShowOptionsMenu(false);
+  };
+
+  const handleReport = () => {
+    alert('Report functionality coming soon!');
+    setShowOptionsMenu(false);
+  };
+
+  const handleDelete = async () => {
+    if (!window.confirm('Are you sure you want to delete this post?')) {
+      setShowOptionsMenu(false);
+      return;
+    }
+    try {
+      await postAPI.deletePost(postId);
+      if (onDeletePost) {
+        onDeletePost(postId);
+      }
+    } catch (error) {
+      console.error('Error deleting post:', error);
+      alert('Failed to delete post');
+    }
+    setShowOptionsMenu(false);
   };
   
   return(
@@ -126,8 +157,45 @@ const Header = ({ profileImage, username, userId }) => {
         )}
       </div>
       {/* Menu options */}
-      <div className="bar-right">
-        <img src={threeDots} alt="menu" className="menu-icon" />
+      <div className="bar-right" style={{ position: 'relative' }}>
+        <img 
+          src={threeDots} 
+          alt="menu" 
+          className="menu-icon" 
+          onClick={() => setShowOptionsMenu(!showOptionsMenu)}
+          style={{ cursor: 'pointer' }}
+        />
+        {showOptionsMenu && (
+          <div className="options-menu-card">
+            {isOwnPost ? (
+              <>
+                <div className="menu-item-card" onClick={handleDelete}>
+                  Delete Post
+                </div>
+                <div className="menu-item-card" onClick={handleCopyLink}>
+                  Copy Link
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="menu-item-card" onClick={handleReport}>
+                  Report
+                </div>
+                {isFollowing && (
+                  <div className="menu-item-card" onClick={handleFollowClick}>
+                    Unfollow @{username}
+                  </div>
+                )}
+                <div className="menu-item-card" onClick={handleCopyLink}>
+                  Copy Link
+                </div>
+              </>
+            )}
+            <div className="menu-item-card" onClick={() => setShowOptionsMenu(false)}>
+              Cancel
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
@@ -305,7 +373,6 @@ const ActionBar = ( {onCommentClick, onLikePost, post} ) => {
           alt="heart" 
           className={`action-icon ${isLiked ? 'liked' : ''}`}
           onClick={handleLike}
-          style={{ color: isLiked ? '#e91e63' : 'inherit' }}
         />
         <ModeComment alt="comment" className="action-icon" onClick={onCommentClick}/>
         <Send alt="send" className="action-icon"/>
@@ -314,12 +381,8 @@ const ActionBar = ( {onCommentClick, onLikePost, post} ) => {
       <div className="bar-right">
         <BookMark 
           alt="bookmark" 
-          className="action-icon-right"
+          className={`action-icon-right ${isSaved ? 'bookmarked' : ''}`}
           onClick={handleBookmark}
-          style={{ 
-            color: isSaved ? '#FFD700' : '#000',
-            cursor: 'pointer'
-          }}
         />
       </div>
     </div>

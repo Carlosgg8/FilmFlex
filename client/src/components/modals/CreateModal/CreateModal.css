@@ -4,7 +4,7 @@
     left: 0;
     height: 100vh;
     width: 100vw;
-    background-color: rgba(0, 0, 0, 0.35);
+    background-color: rgba(90, 74, 58, 0.35);
     z-index: 1000;
 }
 
@@ -13,7 +13,9 @@
     display: flex;
     height: 90vh;
     max-height: 900px;
-  
+    background: #faf9f7;
+    border-radius: 12px;
+    overflow: hidden;
 }
 
 .modal-image-container {
@@ -22,7 +24,7 @@
     flex-direction: column;
     gap: 20px;
     padding: 20px;
-    border-right: 1px solid #dbdbdb;
+    border-right: 1px solid #d5cbbc;
 }
 
 .image-upload-section {
@@ -45,9 +47,10 @@
 .upload-placeholder {
     text-align: center;
     padding: 40px;
-    border: 2px dashed #dbdbdb;
+    border: 2px dashed #d5cbbc;
     border-radius: 8px;
     width: 100%;
+    color: #5a4a3a;
 }
 
 .movie-search-section {
@@ -66,9 +69,11 @@
 .movie-search-input {
     width: 100%;
     padding: 10px;
-    border: 1px solid #dbdbdb;
+    border: 1px solid #d5cbbc;
     border-radius: 4px;
     font-size: 14px;
+    background: #faf9f7;
+    color: #3a2a1a;
 }
 
 .search-dropdown {
@@ -76,14 +81,14 @@
     top: 100%;
     left: 0;
     right: 0;
-    background: white;
-    border: 1px solid #dbdbdb;
+    background: #faf9f7;
+    border: 1px solid #d5cbbc;
     border-radius: 4px;
     margin-top: 4px;
     max-height: 300px;
     overflow-y: auto;
     z-index: 1000;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 2px 8px rgba(90, 74, 58, 0.15);
 }
 
 .search-result-item {
@@ -91,11 +96,11 @@
     align-items: center;
     padding: 10px;
     cursor: pointer;
-    border-bottom: 1px solid #efefef;
+    border-bottom: 1px solid #e0d6c8;
 }
 
 .search-result-item:hover {
-    background-color: #fafafa;
+    background-color: #f0ebe5;
 }
 
 .result-poster {
@@ -118,15 +123,16 @@
 
 .result-year {
     font-size: 12px;
-    color: #8e8e8e;
+    color: #7a6b5a;
 }
 
 .selected-movie {
     margin-top: 10px;
     padding: 10px;
-    background-color: #f0f0f0;
+    background-color: #f0ebe5;
     border-radius: 4px;
     font-size: 14px;
+    color: #3a2a1a;
 }
 
 .stars {
@@ -137,8 +143,13 @@
 }
 
 .star {
-    color: #dbdbdb;
+    color: #d5cbbc;
     cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+.star:hover {
+    color: #8a7860;
 }
 
 .star.rated {
@@ -149,25 +160,32 @@
     width: 100%;
     height: 150px;
     padding: 12px;
-    border: 1px solid #dbdbdb;
+    border: 1px solid #d5cbbc;
     border-radius: 4px;
     resize: none;
     font-size: 16px;
+    background: #faf9f7;
+    color: #3a2a1a;
 }
 
 .post-button {
     width: 100%;
     padding: 12px;
-    background: #0095f6;
+    background: #8a7860;
     color: white;
     border: none;
     border-radius: 4px;
     font-weight: 600;
     cursor: pointer;
     font-size: 16px;
+    transition: background 0.2s ease;
+}
+
+.post-button:hover:not(:disabled) {
+    background: #5a4a3a;
 }
 
 .post-button:disabled {
-    background: #cccccc;
+    background: #d5cbbc;
     cursor: not-allowed;
 }

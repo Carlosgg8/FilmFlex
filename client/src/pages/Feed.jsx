@@ -10,13 +10,13 @@ import { postAPI } from "../services/api.js";
 /**
  * Component that renders the feed of post cards
  */
-const FeedContent = ({ handleSelectPost, handleLikePost, posts, refreshKey }) => {
+const FeedContent = ({ handleSelectPost, handleLikePost, handleDeletePost, posts, refreshKey }) => {
   return (
     <div className="feed-content">
       <div className="feed-grid">
         {/* Map through posts to create PostCard components */}
         {posts.map((post) => (
-          <PostCard key={`${post._id || post.id}-${refreshKey}`} post={post} onCommentClick={handleSelectPost} onLikePost={handleLikePost} />
+          <PostCard key={`${post._id || post.id}-${refreshKey}`} post={post} onCommentClick={handleSelectPost} onLikePost={handleLikePost} onDeletePost={handleDeletePost} />
         ))}
       </div> 
     </div>
@@ -172,7 +172,7 @@ function Feed() {
     <>
       
       <div className="feed-container">
-        <FeedContent handleSelectPost={handleSelectPost} handleLikePost={handleLikePost} posts={posts} refreshKey={refreshKey} />
+        <FeedContent handleSelectPost={handleSelectPost} handleLikePost={handleLikePost} handleDeletePost={handleDeletePost} posts={posts} refreshKey={refreshKey} />
       </div>
       {/* Conditionally render post modal */}
       {isModalOpen && (

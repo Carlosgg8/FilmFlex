@@ -2,6 +2,8 @@
     max-width: 1200px;
     margin: 0 auto;
     padding: 80px 20px 20px;
+    background: wheat;
+    min-height: 100vh;
 }
 
 .saved-posts-header {
@@ -13,18 +15,18 @@
 .saved-posts-header h1 {
     font-size: 2rem;
     margin-bottom: 8px;
-    color: #262626;
+    color: #3a2a1a;
 }
 
 .saved-posts-header p {
-    color: #8e8e8e;
+    color: #5a4a3a;
     font-size: 0.95rem;
 }
 
 .saved-posts-loading {
     text-align: center;
     padding: 60px 20px;
-    color: #8e8e8e;
+    color: #5a4a3a;
     font-size: 1.1rem;
 }
 
@@ -41,12 +43,12 @@
 
 .empty-state h2 {
     font-size: 1.5rem;
-    color: #262626;
+    color: #3a2a1a;
     margin-bottom: 12px;
 }
 
 .empty-state p {
-    color: #8e8e8e;
+    color: #5a4a3a;
     font-size: 1rem;
 }
 
@@ -63,10 +65,12 @@
     overflow: hidden;
     border-radius: 8px;
     transition: transform 0.2s ease;
+    box-shadow: 0 2px 8px rgba(90, 74, 58, 0.15);
 }
 
 .saved-post-card:hover {
     transform: scale(1.02);
+    box-shadow: 0 4px 16px rgba(90, 74, 58, 0.25);
 }
 
 .saved-post-image {
@@ -81,7 +85,7 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: linear-gradient(to bottom, transparent 60%, rgba(0, 0, 0, 0.7));
+    background: linear-gradient(to bottom, transparent 60%, rgba(90, 74, 58, 0.8));
     opacity: 0;
     transition: opacity 0.2s ease;
     display: flex;
@@ -96,7 +100,7 @@
 .saved-post-info {
     display: flex;
     gap: 16px;
-    color: white;
+    color: #faf9f7;
     font-size: 0.95rem;
     font-weight: 500;
 }

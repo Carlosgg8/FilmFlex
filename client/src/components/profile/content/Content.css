@@ -2,14 +2,19 @@
 
 .content-container {
   width: 100%;
+  background: wheat;
+  padding-bottom: 40px;
+  padding-top: 30px;
 }
 
 .content {
   width: 960px;
   margin: 0 auto; 
+  margin-left: calc(50% - 475px);
   display: grid;
   grid-template-columns: repeat(3, 1fr); 
-  gap: 20px; 
+  gap: 20px;
+  background: wheat;
 }
 
 
@@ -28,7 +33,7 @@
 
 .profile-separator {
   width: 100%;
-  border-top: 1px solid #dbdbdb; /* Lighter line (Instagram-like) */
+  border-top: 1px solid #d5cbbc;
   margin: 20px 0 40px 0;
 }
 
@@ -36,7 +41,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  color: #262626;
+  color: #3a2a1a;
   text-align: center; /* Ensure text is centered */
   width: 100%; /* Take full width of parent */
 }
@@ -45,19 +50,25 @@
   font-size: 22px;
   font-weight: 600;
   margin-bottom: 10px;
+  color: #3a2a1a;
 }
 
 .noPost-text p {
   font-size: 14px;
-  color: #8e8e8e;
+  color: #5a4a3a;
   margin-bottom: 20px;
 }
 
 .noPost-create-link a {
   font-weight: 600;
-  color: #0095f6;
+  color: #8a7860;
   text-decoration: none;
   font-size: 14px;
+  transition: color 0.2s ease;
+}
+
+.noPost-create-link a:hover {
+  color: #5a4a3a;
 }
 
 

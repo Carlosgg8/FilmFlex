@@ -3,7 +3,10 @@
     align-items: center; 
     width: 960px;
     margin: 0 auto;
-    padding-top: 60px; 
+    padding-top: 60px;
+    padding-bottom: 30px;
+    background: wheat;
+    border-bottom: 2px solid #d5cbbc;
 }
 
 .header-left{
@@ -18,7 +21,7 @@
     height: 150px;
     border-radius: 50%;
     object-fit: cover; 
-    border: 1px solid #dbdbdb;
+    border: 2px solid #d5cbbc;
 }
 
 .header-right {
@@ -32,32 +35,48 @@
     font-size: 28px; 
     font-weight: 300; 
     margin: 0; 
-    margin-right: 20px; 
+    margin-right: 20px;
+    color: #3a2a1a;
 }
 
 .follow-btn {
-    background-color: #0095f6; 
+    background-color: #8a7860; 
     color: white; 
     border: none; 
     border-radius: 4px; 
     padding: 5px 9px; 
     font-weight: 600; 
     cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.follow-btn:hover {
+    background-color: #5a4a3a;
+}
+
+.follow-btn.following {
+    background-color: #e0d6c8;
+    color: #5a4a3a;
+}
+
+.follow-btn.following:hover {
+    background-color: #d5cbbc;
 }
 
 .edit-profile-btn {
-    background-color: #efefef;
-    color: #262626;
+    background-color: #e0d6c8;
+    color: #5a4a3a;
     border: none;
     border-radius: 4px;
     padding: 5px 16px;
     font-weight: 600;
     cursor: pointer;
     font-size: 14px;
+    transition: background-color 0.2s ease;
 }
 
 .edit-profile-btn:hover {
-    background-color: #dbdbdb;
+    background-color: #d5cbbc;
 }
 
 .user-info{
@@ -78,21 +97,31 @@
 
 .user-counts span {
     margin-right: 40px; 
-    font-size: 16px; 
+    font-size: 16px;
+    color: #3a2a1a;
+    font-weight: 500;
 }
 
 .user-description {
     line-height: 1.5;
+    color: #3a2a1a;
 }
 
 .display-name {
     font-size: 16px;
     display: block; 
-    margin-bottom: 5px; 
+    margin-bottom: 5px;
+    color: #3a2a1a;
+    font-weight: 600;
 }
 
 .profile-link {
-    color: #00376b; 
+    color: #8a7860; 
     text-decoration: none;
-    font-weight: 600; 
+    font-weight: 600;
+    transition: color 0.2s ease;
+}
+
+.profile-link:hover {
+    color: #5a4a3a;
 }
