@@ -143,6 +143,11 @@ router.post("/login", async (req, res) => {
       return res.status(400).json({ message: "Invalid credentials" });
     }
     
+    // Check if user has a password (Google users don't have passwords)
+    if (!user.password) {
+      return res.status(400).json({ message: "This account uses Google login. Please sign in with Google." });
+    }
+    
     // Check password
     const isValidPassword = await bcrypt.compare(password, user.password);
     if (!isValidPassword) {

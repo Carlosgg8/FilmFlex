@@ -25,11 +25,6 @@ export default function CommentItem({comment, onLikeComment, currentUserId}){
     
     const likesCount = Array.isArray(comment.likes) ? comment.likes.length : 0;
 
-    // Debug: Log comment structure
-    console.log('Comment data:', comment);
-    console.log('Comment.user:', comment.user);
-    console.log('Comment.user?.picture:', comment.user?.picture);
-
     // Get the comment author's ID (handle both ObjectId objects and strings)
     const commentUserId = comment.user?._id || comment.user;
     

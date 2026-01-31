@@ -39,17 +39,21 @@
 
 .empty-state {
     text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
 }
 
 .empty-state h2 {
     font-size: 1.5rem;
     color: #3a2a1a;
-    margin-bottom: 12px;
+    margin: 0;
 }
 
 .empty-state p {
     color: #5a4a3a;
     font-size: 1rem;
+    margin: 0;
 }
 
 .saved-posts-grid {

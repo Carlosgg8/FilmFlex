@@ -25,9 +25,6 @@ import AuthProvider from "./context/authContext";
  */
  // Render the application
  
- // DEBUG: Check what Client ID is being loaded
- console.log('GOOGLE CLIENT ID:', import.meta.env.VITE_GOOGLE_CLIENT_ID);
- 
  root.render(
   <React.StrictMode>
     <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>

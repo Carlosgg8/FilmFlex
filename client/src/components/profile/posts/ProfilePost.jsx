@@ -29,14 +29,10 @@ export default function ProfilePost({ post, postHandler }) {
       </div>
       {/* Hover overlay showing engagement stats */}
       <div className="post-overlay">
-        <span>
-          <Favorite/>
-          {Array.isArray(post.likes) ? post.likes.length : (post.likes || 0)}
-        </span>
-        <span>
-          <ModeComment/>
-          {post.comments?.length || 0}
-        </span>
+        <div className="post-info">
+          <span className="post-likes">❤️ {Array.isArray(post.likes) ? post.likes.length : (post.likes || 0)}</span>
+          <span className="post-comments">💬 {post.comments?.length || 0}</span>
+        </div>
       </div>
     </div>
   );

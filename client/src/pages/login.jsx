@@ -14,15 +14,27 @@ function Login() {
   const { login } = useContext(AuthContext);
 
   const [form, setForm] = useState({
-      email: "",
+      usernameOrEmail: "",
       password: ""
     });
+
+  // Handle email/password login
+  const handleEmailLogin = async (e) => {
+    e.preventDefault();
+    
+    try {
+      const response = await api.post("/api/auth/login", form);
+      login(response.data.token, response.data.user);
+    } catch (error) {
+      console.error("Email login failed:", error);
+      alert(error.response?.data?.message || "Login failed. Please check your credentials.");
+    }
+  };
 
   // Handle successful Google OAuth login
   const handleSuccess = async (credentialResponse) => {
     try {
       const idToken = credentialResponse.credential;
-      // Send Google credential to backend for verification
       const response = await api.post("/api/auth/google", { credential: idToken });
       login(response.data.token, response.data.user);
     } catch (error) {
@@ -64,7 +76,12 @@ function Login() {
           {/* Custom Google button that triggers the hidden GoogleLogin */}
           <button 
             className="social-button"
-            onClick={() => document.querySelector('div[role=button]').click()}
+            onClick={() => {
+              const googleButton = document.querySelector('div[role=button]');
+              if (googleButton) {
+                googleButton.click();
+              }
+            }}
           >
             <img src={GoogleLogo} alt="Google" className="social-icon" />
             Google
@@ -77,27 +94,35 @@ function Login() {
 
         <p className="seperator"><span>or</span></p>
         {/* Traditional email/password login form */}
-        <form action="#" className="login-form">
+        <form onSubmit={handleEmailLogin} className="login-form">
           <div className="input-wrapper">
             <input
-              name="email"
-              type="email"
-              placeholder="Email address"
+              name="usernameOrEmail"
+              type="text"
+              placeholder="Email or Username"
               className="input-field"
               required
-              value={form.email}
+              value={form.usernameOrEmail}
               onChange={(e) => setForm({ ...form, [e.target.name]: e.target.value })}
             />
             <i className="material-symbols-outlined"> mail</i>
           </div>
 
           <div className="input-wrapper">
-            <input type="password" placeholder="Password" className="input-field" required/>
+            <input 
+              name="password"
+              type="password" 
+              placeholder="Password" 
+              className="input-field" 
+              required
+              value={form.password}
+              onChange={(e) => setForm({ ...form, [e.target.name]: e.target.value })}
+            />
             <i className="material-symbols-outlined">lock</i>
           </div>
           <a href="#" className="forgot-pass-link">Forgot Password?</a>
 
-          <button className="login-button">Log In</button>
+          <button type="submit" className="login-button">Log In</button>
         </form>
         {/* Sign up link for new users */}
        <p className="signup-text">Don't have an account? <a href="/signup">Sign up now!</a></p>
