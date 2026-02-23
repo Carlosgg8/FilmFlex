@@ -213,6 +213,12 @@ body {
   cursor: pointer;
 }
 
+.searchbar-section {
+  position: absolute;
+  left: 49%;
+  transform: translateX(-50%);
+}
+
 .search-wrapper {
   position: relative;
   width: 200px; /* adjust as needed */

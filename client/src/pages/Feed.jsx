@@ -6,6 +6,7 @@ import { selectPost } from "../utils/postHandlers.js"
 import { AuthContext } from "../context/authContext";
 import PostModal from "../components/modals/PostModal/PostModal.jsx"
 import { postAPI } from "../services/api.js";
+import UsernameSetup from "../components/login/Username/UsernameSetup.jsx";
 
 /**
  * Component that renders the feed of post cards
@@ -170,6 +171,8 @@ function Feed() {
 
   return (
     <>
+      {/* Show username setup modal if user doesn't have username */}
+      {user && !user.username && <UsernameSetup />}
       
       <div className="feed-container">
         <FeedContent handleSelectPost={handleSelectPost} handleLikePost={handleLikePost} handleDeletePost={handleDeletePost} posts={posts} refreshKey={refreshKey} />

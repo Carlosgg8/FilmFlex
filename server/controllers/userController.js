@@ -116,3 +116,54 @@ export const updateProfile = async (req, res) => {
     res.status(500).json({ message: "Failed to update profile", error: error.message });
   }
 };
+
+/**
+ * @route   POST /api/user/set-username
+ * @desc    Set username for users who don't have one (typically Google auth users)
+ * @access  Private (requires JWT)
+ */
+export const setUsername = async (req, res) => {
+  try {
+    const userId = req.user.userId; // Get user ID from JWT token
+    const { username } = req.body;
+
+    if (!username || username.trim().length === 0) {
+      return res.status(400).json({ message: "Username is required" });
+    }
+
+    // Check if username is already taken
+    const existingUser = await User.findOne({ username: username.trim() });
+    if (existingUser) {
+      return res.status(400).json({ message: "Username is already taken" });
+    }
+
+    // Update user with new username
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      { $set: { username: username.trim() } },
+      { new: true, runValidators: true }
+    ).select('-email'); // Exclude sensitive data
+
+    if (!updatedUser) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Return user with userId field (mapped from _id) for frontend compatibility
+    res.status(200).json({ 
+      message: "Username set successfully", 
+      user: {
+        userId: updatedUser._id,
+        name: updatedUser.name,
+        email: updatedUser.email,
+        picture: updatedUser.picture,
+        username: updatedUser.username,
+        bio: updatedUser.bio,
+        followers: updatedUser.followers,
+        following: updatedUser.following
+      }
+    });
+  } catch (error) {
+    console.error('Set username error:', error);
+    res.status(500).json({ message: "Failed to set username", error: error.message });
+  }
+};

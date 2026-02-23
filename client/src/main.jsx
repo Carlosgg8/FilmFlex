@@ -38,4 +38,4 @@ import AuthProvider from "./context/authContext";
       </BrowserRouter>     
     </GoogleOAuthProvider>
   </React.StrictMode>
- );
+ )

@@ -1,0 +1,101 @@
+/* Username Setup Modal Overlay */
+.username-setup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(90, 74, 58, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  backdrop-filter: blur(4px);
+}
+
+.username-setup-modal {
+  background-color: #faf9f7;
+  padding: 40px;
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(90, 74, 58, 0.3);
+  max-width: 450px;
+  width: 90%;
+  text-align: center;
+}
+
+.username-setup-modal h2 {
+  font-family: 'Pacifico', cursive;
+  font-size: 28px;
+  color: #5a4a3a;
+  margin-bottom: 12px;
+}
+
+.username-setup-modal p {
+  color: #7a6b5a;
+  font-size: 16px;
+  margin-bottom: 30px;
+}
+
+.username-setup-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.username-input {
+  width: 100%;
+  padding: 14px 16px;
+  border: 2px solid #d5cbbc;
+  border-radius: 8px;
+  font-size: 16px;
+  background-color: #fff;
+  color: #5a4a3a;
+  transition: border-color 0.3s;
+  box-sizing: border-box;
+}
+
+.username-input:focus {
+  outline: none;
+  border-color: #b8a995;
+  box-shadow: 0 0 0 3px rgba(184, 169, 149, 0.2);
+}
+
+.username-input:disabled {
+  background-color: #f0ebe5;
+  cursor: not-allowed;
+}
+
+.username-submit-btn {
+  padding: 14px 24px;
+  background-color: #5a4a3a;
+  color: #faf9f7;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.1s;
+}
+
+.username-submit-btn:hover:not(:disabled) {
+  background-color: #7a6b5a;
+  transform: translateY(-1px);
+}
+
+.username-submit-btn:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.username-submit-btn:disabled {
+  background-color: #b8a995;
+  cursor: not-allowed;
+}
+
+.username-error {
+  color: #d32f2f;
+  font-size: 14px;
+  padding: 10px;
+  background-color: #ffebee;
+  border-radius: 6px;
+  border-left: 3px solid #d32f2f;
+}

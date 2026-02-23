@@ -49,8 +49,15 @@ useEffect hook:
     const storedToken = localStorage.getItem("jwt");   
     const storedUser = localStorage.getItem("user"); 
     if (storedToken && storedUser) {
+      const parsedUser = JSON.parse(storedUser);
+      // Normalize _id to userId for backward compatibility
+      if (parsedUser._id && !parsedUser.userId) {
+        parsedUser.userId = parsedUser._id;
+        // Update localStorage with normalized data
+        localStorage.setItem("user", JSON.stringify(parsedUser));
+      }
       setToken(storedToken);                   // Set token state
-      setUser(JSON.parse(storedUser));         // Parse user string and set user state
+      setUser(parsedUser);                     // Set normalized user state
     }
   }, []); // Empty dependency array → runs only once on component mount
   /**
@@ -68,10 +75,15 @@ login function
 
   const login = (jwt, userInfo) => {
     console.log("[AuthContext] login() userInfo:", userInfo);
-    localStorage.setItem("jwt", jwt);                       // Save token persistently
-    localStorage.setItem("user", JSON.stringify(userInfo)); // Save user as a string
-    setToken(jwt);                                          // Update state
-    setUser(userInfo);
+    // Normalize _id to userId for consistency
+    const normalizedUser = { ...userInfo };
+    if (normalizedUser._id && !normalizedUser.userId) {
+      normalizedUser.userId = normalizedUser._id;
+    }
+    localStorage.setItem("jwt", jwt);                              // Save token persistently
+    localStorage.setItem("user", JSON.stringify(normalizedUser));  // Save normalized user as a string
+    setToken(jwt);                                                 // Update state
+    setUser(normalizedUser);
   };
   /**
    * 
